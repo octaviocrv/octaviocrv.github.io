@@ -1,34 +1,57 @@
-/* ───────────────────────── Topo ───────────────────────── */
+/* ═════════════════════════ Topo ═════════════════════════ */
 .hud-top {
   position: fixed;
   inset: 0 0 auto;
   z-index: 50;
   display: flex;
   align-items: center;
-  gap: 28px;
-  height: 76px;
+  gap: var(--s-3);
+  height: 72px;
   padding: 0 var(--gutter) 0 var(--gutter-l);
   color: var(--hud-fg);
   transition:
     transform 0.5s var(--ease),
-    color 0.4s var(--ease);
+    color var(--t-med) var(--ease);
 }
 
+/* em repouso: só um degradê; após rolar: vidro fosco + hairline */
 .hud-top::before {
   content: '';
   position: absolute;
-  inset: 0 0 -20px;
+  inset: 0;
   z-index: -1;
-  background: linear-gradient(to bottom, rgba(3, 10, 20, 0.92), rgba(3, 10, 20, 0));
-  transition: opacity 0.4s var(--ease);
+  background: linear-gradient(to bottom, rgba(3, 10, 20, 0.85), rgba(3, 10, 20, 0));
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color var(--t-med) var(--ease),
+    border-color var(--t-med) var(--ease);
+}
+
+.hud-top.is-scrolled::before {
+  background: rgba(3, 10, 20, 0.72);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border-bottom-color: var(--line);
 }
 
 html[data-surface='light'] .hud-top::before {
-  opacity: 0;
+  background: transparent;
+}
+
+html[data-surface='light'] .hud-top.is-scrolled::before {
+  background: rgba(232, 239, 247, 0.76);
+  border-bottom-color: var(--ink-line);
 }
 
 .hud-top.is-hidden {
   transform: translateY(-100%);
+}
+
+.hud-top.is-menu::before {
+  background: transparent;
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .brand {
@@ -36,29 +59,36 @@ html[data-surface='light'] .hud-top::before {
   align-items: center;
   gap: 12px;
   margin-right: auto;
+  border-radius: var(--r-sm);
 }
 
 .brand__avatar {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
   background: var(--blue);
   box-shadow: 0 0 0 1px var(--hud-line);
+  transition: box-shadow var(--t-med) var(--ease);
+}
+
+.brand:hover .brand__avatar {
+  box-shadow: 0 0 0 1px var(--signal), 0 0 0 4px rgba(96, 179, 255, 0.15);
 }
 
 .brand__name {
   display: flex;
   flex-direction: column;
-  font-size: 0.95rem;
+  gap: 2px;
+  font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  line-height: 1.15;
+  line-height: 1.1;
 }
 
 .brand__role {
   font-family: var(--f-mono);
-  font-size: 0.64rem;
+  font-size: var(--fs-label);
   font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -67,26 +97,30 @@ html[data-surface='light'] .hud-top::before {
 
 .hud-nav ul {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .hud-nav__link {
   position: relative;
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
-  padding: 8px 12px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: var(--r-sm);
   font-family: var(--f-mono);
-  font-size: 0.72rem;
+  font-size: var(--fs-label);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--hud-dim);
-  transition: color 0.3s var(--ease);
+  transition:
+    color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
 }
 
 .hud-nav__idx {
-  font-size: 0.62rem;
-  opacity: 0.7;
+  opacity: 0.6;
+  transition: color var(--t-fast), opacity var(--t-fast);
 }
 
 .hud-nav__link::after {
@@ -94,7 +128,7 @@ html[data-surface='light'] .hud-top::before {
   position: absolute;
   left: 12px;
   right: 12px;
-  bottom: 2px;
+  bottom: 6px;
   height: 1px;
   background: currentColor;
   transform: scaleX(0);
@@ -102,7 +136,15 @@ html[data-surface='light'] .hud-top::before {
   transition: transform 0.45s var(--ease);
 }
 
-.hud-nav__link:hover,
+.hud-nav__link:hover {
+  color: var(--hud-fg);
+  background: rgba(130, 180, 240, 0.06);
+}
+
+html[data-surface='light'] .hud-nav__link:hover {
+  background: rgba(4, 16, 31, 0.05);
+}
+
 .hud-nav__link.is-active {
   color: var(--hud-fg);
 }
@@ -116,8 +158,7 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
   color: var(--blue);
 }
 
-.hud-nav__link.is-active::after,
-.hud-nav__link:hover::after {
+.hud-nav__link.is-active::after {
   transform: scaleX(1);
 }
 
@@ -126,18 +167,31 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
   align-items: center;
   gap: 10px;
   height: 40px;
-  padding: 0 16px;
-  border: 1px solid var(--hud-line);
-  border-radius: 10px;
-  font-size: 0.88rem;
+  padding: 0 var(--s-2);
+  border-radius: var(--r-md);
+  font-size: var(--fs-small);
   font-weight: 600;
-  transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+  line-height: 1;
+  box-shadow: inset 0 0 0 1px var(--hud-line);
+  transition:
+    background-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
 }
 
 .hud-cta:hover {
-  background: var(--live);
-  border-color: var(--live);
-  color: var(--ink);
+  background: rgba(212, 255, 58, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(212, 255, 58, 0.5);
+}
+
+html[data-surface='light'] .hud-cta:hover {
+  background: rgba(4, 16, 31, 0.05);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+.hud-cta:active {
+  transform: scale(0.97);
 }
 
 .hud-burger {
@@ -145,15 +199,27 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
   position: relative;
   width: 44px;
   height: 44px;
-  border: 1px solid var(--hud-line);
-  border-radius: 10px;
+  border-radius: var(--r-md);
+  box-shadow: inset 0 0 0 1px var(--hud-line);
+  transition: background-color var(--t-fast), transform var(--t-fast) var(--ease);
+}
+
+.hud-burger:hover {
+  background: rgba(130, 180, 240, 0.06);
+}
+
+.hud-burger:active {
+  transform: scale(0.95);
 }
 
 .hud-burger span {
   position: absolute;
-  left: 12px;
-  right: 12px;
+  left: 13px;
+  right: 13px;
+  top: 50%;
   height: 1.5px;
+  margin-top: -0.75px;
+  border-radius: 1px;
   background: currentColor;
   transition: transform 0.4s var(--ease);
 }
@@ -178,7 +244,7 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
   color: var(--text);
 }
 
-/* ───────────────────────── Menu (mobile) ───────────────────────── */
+/* ═════════════════════════ Menu (mobile) ═════════════════════════ */
 .menu {
   position: fixed;
   inset: 0;
@@ -186,16 +252,19 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 110px var(--gutter) 40px;
+  padding: var(--s-15) var(--gutter) var(--s-5);
   background: var(--bg);
   clip-path: inset(0 0 100% 0);
-  transition: clip-path 0.7s var(--ease-in-out);
   visibility: hidden;
+  transition:
+    clip-path 0.7s var(--ease-in-out),
+    visibility 0s 0.7s;
 }
 
 .menu.is-open {
   clip-path: inset(0);
   visibility: visible;
+  transition: clip-path 0.7s var(--ease-in-out);
 }
 
 .menu__list li {
@@ -206,24 +275,31 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
 .menu__link {
   display: flex;
   align-items: baseline;
-  gap: 16px;
-  padding: 12px 0;
-  font-size: clamp(2.2rem, 10vw, 4rem);
+  gap: var(--s-2);
+  padding: var(--s-1) 0 12px;
+  font-size: clamp(2.25rem, 10vw, 4rem);
   font-weight: 600;
   letter-spacing: -0.04em;
-  line-height: 1.05;
+  line-height: 1.1;
   transform: translateY(110%);
-  transition: transform 0.7s var(--ease);
-  transition-delay: calc(var(--i) * 50ms + 150ms);
+  transition:
+    transform 0.7s var(--ease),
+    color var(--t-fast);
+  transition-delay: calc(var(--i) * 50ms + 150ms), 0s;
 }
 
 .menu.is-open .menu__link {
   transform: none;
 }
 
+.menu__link:hover,
+.menu__link:active {
+  color: var(--signal);
+}
+
 .menu__idx {
   font-family: var(--f-mono);
-  font-size: 0.8rem;
+  font-size: var(--fs-label);
   letter-spacing: 0.1em;
   color: var(--signal);
 }
@@ -231,21 +307,34 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
 .menu__foot {
   display: flex;
   flex-wrap: wrap;
-  gap: 22px;
-  font-family: var(--f-mono);
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
+  gap: var(--s-3);
 }
 
-/* ───────────────────────── Barramento ───────────────────────── */
+.menu__foot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-family: var(--f-mono);
+  font-size: var(--fs-label);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  transition: color var(--t-fast);
+}
+
+.menu__foot a:hover,
+.menu__foot a:active {
+  color: var(--signal);
+}
+
+/* ═════════════════════════ Barramento ═════════════════════════ */
 .bus {
   position: fixed;
-  left: 26px;
+  left: 24px;
   top: 24vh;
   bottom: 24vh;
-  width: 20px;
+  width: 24px;
   z-index: 30;
   display: none;
 }
@@ -258,7 +347,7 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
 
 .bus__rail {
   position: absolute;
-  left: 9px;
+  left: 11.5px;
   top: 0;
   bottom: 0;
   width: 1px;
@@ -282,7 +371,12 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
   margin-top: -3.5px;
   border-radius: 50%;
   background: var(--live);
-  box-shadow: 0 0 0 4px rgba(212, 255, 58, 0.12), 0 0 16px rgba(212, 255, 58, 0.7);
+  box-shadow: 0 0 0 4px rgba(212, 255, 58, 0.12), 0 0 16px rgba(212, 255, 58, 0.6);
+}
+
+html[data-surface='light'] .bus__packet {
+  background: var(--blue);
+  box-shadow: 0 0 0 4px rgba(0, 98, 185, 0.15);
 }
 
 .bus li {
@@ -296,53 +390,73 @@ html[data-surface='light'] .hud-nav__link.is-active .hud-nav__idx {
   position: relative;
   display: grid;
   place-items: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-xs);
 }
 
 .bus__node::before {
   content: '';
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   border: 1px solid var(--hud-line);
   background: var(--bg);
   transform: rotate(45deg);
-  transition: all 0.4s var(--ease);
+  transition:
+    width var(--t-med) var(--ease),
+    height var(--t-med) var(--ease),
+    background-color var(--t-med) var(--ease),
+    border-color var(--t-med) var(--ease),
+    box-shadow var(--t-med) var(--ease);
 }
 
 html[data-surface='light'] .bus__node::before {
   background: var(--paper);
 }
 
-.bus__node.is-passed::before {
+.bus__node:hover::before {
+  border-color: var(--signal);
+}
+
+.bus .bus__node.is-passed::before {
   border-color: var(--signal);
   background: var(--blue);
 }
 
-.bus__node.is-active::before {
-  width: 11px;
-  height: 11px;
+.bus .bus__node.is-active::before {
+  width: 10px;
+  height: 10px;
   border-color: var(--live);
   background: var(--live);
-  box-shadow: 0 0 14px rgba(212, 255, 58, 0.55);
+  box-shadow: 0 0 12px rgba(212, 255, 58, 0.5);
+}
+
+html[data-surface='light'] .bus .bus__node.is-active::before {
+  border-color: var(--blue);
+  background: var(--blue);
+  box-shadow: 0 0 0 4px rgba(0, 98, 185, 0.15);
 }
 
 .bus__label {
   position: absolute;
-  left: 30px;
+  left: 32px;
   white-space: nowrap;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: var(--panel);
+  padding: 6px 10px;
+  border-radius: var(--r-xs);
+  background: var(--panel-2);
+  box-shadow: inset 0 0 0 1px var(--line-2), var(--e-2);
   color: var(--text);
   font-family: var(--f-mono);
-  font-size: 0.66rem;
+  font-size: var(--fs-label);
+  line-height: 1;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   opacity: 0;
-  transform: translateX(-6px);
+  transform: translateX(-4px);
   pointer-events: none;
-  transition: all 0.3s var(--ease);
+  transition:
+    opacity var(--t-fast) var(--ease),
+    transform var(--t-med) var(--ease);
 }
 
 .bus__node:hover .bus__label,
@@ -368,23 +482,33 @@ html[data-surface='light'] .bus__node::before {
   }
 }
 
-/* ───────────────────────── Rodapé do HUD ───────────────────────── */
+/* ═════════════════════════ Rodapé do HUD ═════════════════════════ */
 .hud-bottom {
   position: fixed;
   left: var(--gutter-l);
   right: var(--gutter);
-  bottom: 18px;
+  bottom: var(--s-2);
   z-index: 30;
   display: none;
   justify-content: space-between;
   align-items: flex-end;
   font-family: var(--f-mono);
-  font-size: 0.66rem;
+  font-size: var(--fs-label);
+  line-height: 1.4;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--hud-dim);
   pointer-events: none;
-  transition: color 0.4s, opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  transition:
+    color var(--t-med),
+    opacity 0.5s var(--ease),
+    transform 0.5s var(--ease);
+}
+
+@media (min-width: 900px) and (min-height: 640px) {
+  .hud-bottom {
+    display: flex;
+  }
 }
 
 .hud-bottom::before {
@@ -392,25 +516,23 @@ html[data-surface='light'] .bus__node::before {
   position: absolute;
   left: calc(var(--gutter-l) * -1);
   right: calc(var(--gutter) * -1);
-  bottom: -18px;
-  height: 96px;
+  bottom: calc(var(--s-2) * -1);
+  height: 112px;
   z-index: -1;
-  background: linear-gradient(to top, var(--veil, rgba(3, 10, 20, 0.92)), transparent);
+  --v: var(--veil, rgb(3, 10, 20));
+  background: linear-gradient(to top, var(--v) 0%, var(--v) 45%, transparent 100%);
 }
 
 html[data-surface='light'] .hud-bottom::before {
-  --veil: rgba(232, 239, 247, 0.9);
+  --veil: rgb(232, 239, 247);
+  /* acompanha a margem do cartão Sobre, sem pintar a borda escura */
+  left: calc(var(--gutter-l) * -1 + var(--s-2));
+  right: calc(var(--gutter) * -1 + var(--s-2));
 }
 
 .hud-bottom.is-quiet {
   opacity: 0;
   transform: translateY(8px);
-}
-
-@media (min-width: 900px) and (min-height: 640px) {
-  .hud-bottom {
-    display: flex;
-  }
 }
 
 .hud__geo {
@@ -423,11 +545,12 @@ html[data-surface='light'] .hud-bottom::before {
 .hud__count b {
   color: var(--hud-fg);
   font-weight: 500;
+  font-variant-numeric: tabular-nums;
 }
 
 .hud__route {
   display: flex;
-  gap: 22px;
+  gap: var(--s-3);
   align-items: center;
 }
 
@@ -445,12 +568,12 @@ html[data-surface='light'] .hud__log-verb {
 }
 
 .hud__log-ok {
-  margin-left: 10px;
+  margin-left: var(--s-1);
   color: var(--live);
 }
 
 html[data-surface='light'] .hud__log-ok {
-  color: #3d7a00;
+  color: #356a00;
 }
 
 @media (max-width: 1099px) {

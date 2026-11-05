@@ -1,43 +1,108 @@
-/* ───────────────────────── Tokens ───────────────────────── */
+/* ═════════════════════════ Tokens ═════════════════════════ */
 :root {
-  /* paleta: o azul de sempre (#0062b9 / #60b3ff) sobre navies mais profundos */
+  /* — cor: superfícies — */
   --bg: #030a14;
   --bg-2: #061325;
-  --panel: #081a30;
-  --panel-2: #0a2140;
-  --line: rgba(120, 175, 235, 0.13);
-  --line-2: rgba(120, 175, 235, 0.26);
-  --text: #e6eef8;
-  --muted: #8ea3be;
-  --dim: #5f7695;
+  --panel: #07172b;
+  --panel-2: #0a1f38;
+
+  /* — cor: texto (3 papéis, todos AA sobre --bg e --panel) — */
+  --text: #e6eef8; /* primário · 17:1 */
+  --muted: #8ea3be; /* secundário · 7.7:1 */
+  --dim: #7389a8; /* terciário/rótulos · 5.5:1 */
+
+  /* — cor: linhas — */
+  --line: rgba(130, 180, 240, 0.1);
+  --line-2: rgba(130, 180, 240, 0.2);
+  --line-3: rgba(130, 180, 240, 0.34);
+
+  /* — cor: marca — */
   --blue: #0062b9;
-  --blue-hi: #1676dc;
+  --blue-hi: #1673d6;
   --signal: #60b3ff;
   --ice: #9ed2ff;
-  --live: #d4ff3a; /* único acento fora do azul: estados "ao vivo" */
+  --live: #d4ff3a; /* exclusivo de estados "ao vivo" */
+
+  /* — superfície clara (Sobre) — */
   --paper: #e8eff7;
   --paper-2: #d6e3f1;
   --ink: #04101f;
   --ink-muted: #3f5674;
+  --ink-line: rgba(4, 16, 31, 0.14);
 
+  /* — tipografia — */
   --f-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
   --f-serif: 'Instrument Serif', 'Times New Roman', serif;
   --f-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
-  --gutter: clamp(20px, 5vw, 88px);
+  /* escala com papéis: display > h2 > h3 > h4 > lead > body > small > label */
+  --fs-display: clamp(3.25rem, 8.2vw, 8.5rem);
+  --fs-h2: clamp(2.5rem, 6vw, 5.5rem);
+  --fs-h3: clamp(1.75rem, 3.6vw, 3.5rem);
+  --fs-h4: 1.25rem;
+  --fs-name: clamp(1.5rem, 3vw, 2.75rem); /* nomes em listas (projetos, canais) */
+  --fs-lead: clamp(1.125rem, 1.4vw, 1.3125rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-label: 0.6875rem; /* 11px — piso de legibilidade para mono */
+
+  --lh-tight: 0.94;
+  --lh-head: 1.08;
+  --lh-body: 1.6;
+
+  /* — espaço: grade de 8px — */
+  --s-1: 8px;
+  --s-2: 16px;
+  --s-3: 24px;
+  --s-4: 32px;
+  --s-5: 40px;
+  --s-6: 48px;
+  --s-8: 64px;
+  --s-10: 80px;
+  --s-12: 96px;
+  --s-15: 120px;
+  --s-20: 160px;
+  --section: clamp(96px, 11vw, 160px);
+
+  --gutter: clamp(24px, 5vw, 88px);
   --gutter-l: var(--gutter);
   --max: 1480px;
+
+  /* — forma — */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+
+  /* — elevação: luz vem de cima (realce interno) + sombra curta + sombra difusa — */
+  --hl: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --e-1: var(--hl), 0 1px 2px rgba(0, 0, 0, 0.35);
+  --e-2: var(--hl), 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px -12px rgba(0, 0, 0, 0.6);
+  --e-3: var(--hl), 0 2px 4px rgba(0, 0, 0, 0.3), 0 32px 64px -24px rgba(0, 0, 0, 0.75);
+  --glow: 0 16px 40px -16px rgba(0, 98, 185, 0.7);
+
+  /* borda-gradiente de painel (luz no topo) */
+  --panel-fill: linear-gradient(180deg, rgba(10, 31, 56, 0.72), rgba(3, 10, 20, 0.9));
+  --panel-edge: linear-gradient(180deg, rgba(150, 195, 245, 0.24), rgba(150, 195, 245, 0.06));
+
+  /* — movimento — */
   --ease: cubic-bezier(0.2, 0.75, 0.15, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 0.18s;
+  --t-med: 0.32s;
+  --t-slow: 0.6s;
 
+  /* — HUD (troca na superfície clara) — */
   --hud-fg: var(--text);
   --hud-dim: var(--dim);
   --hud-line: var(--line-2);
+  --focus: var(--signal);
 }
 
 @media (min-width: 1100px) {
   :root {
-    --gutter-l: calc(var(--gutter) + 36px);
+    --gutter-l: calc(var(--gutter) + 40px);
   }
 }
 
@@ -47,7 +112,7 @@ html[data-surface='light'] {
   --hud-line: rgba(4, 16, 31, 0.2);
 }
 
-/* ───────────────────────── Reset ───────────────────────── */
+/* ═════════════════════════ Reset ═════════════════════════ */
 *,
 *::before,
 *::after {
@@ -65,8 +130,8 @@ html {
 body {
   min-height: 100vh;
   font-family: var(--f-display);
-  font-size: 1rem;
-  line-height: 1.55;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   color: var(--text);
   background: var(--bg);
   overflow-x: clip;
@@ -74,9 +139,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   font-optical-sizing: auto;
+  font-feature-settings: 'ss01', 'cv11';
 }
 
-/* textura: grade de prancheta + grão — fixa, barata e sutil */
+/* textura: grade de prancheta + grão — fixa e sutil */
 body::before,
 body::after {
   content: '';
@@ -92,12 +158,12 @@ body::before {
     linear-gradient(90deg, var(--line) 1px, transparent 1px);
   background-size: 120px 120px;
   background-position: -1px -1px;
-  opacity: 0.45;
+  opacity: 0.5;
   mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 100%);
 }
 
 body::after {
-  opacity: 0.06;
+  opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -116,6 +182,7 @@ canvas {
 a {
   color: inherit;
   text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button {
@@ -124,6 +191,7 @@ button {
   background: none;
   border: 0;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 ul,
@@ -136,63 +204,82 @@ ol {
   color: var(--ink);
 }
 
+/* foco: anel único para todo o site — segue o raio do elemento */
 :focus-visible {
-  outline: 2px solid var(--signal);
+  outline: 2px solid var(--focus);
   outline-offset: 3px;
-  border-radius: 4px;
+}
+
+.about :focus-visible {
+  --focus: var(--blue);
 }
 
 .skip-link {
   position: fixed;
-  top: 12px;
-  left: 12px;
+  top: var(--s-2);
+  left: var(--s-2);
   z-index: 100;
-  padding: 10px 16px;
+  padding: var(--s-1) var(--s-2);
   background: var(--live);
   color: var(--ink);
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: var(--r-sm);
   transform: translateY(-160%);
-  transition: transform 0.25s var(--ease);
+  transition: transform var(--t-med) var(--ease);
 }
 
 .skip-link:focus {
   transform: none;
 }
 
-/* ───────────────────────── Tipografia ───────────────────────── */
+/* ═════════════════════════ Tipografia ═════════════════════════ */
 .mono {
   font-family: var(--f-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-label);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
+/* eyebrow = rótulo de seção; o "pad" à esquerda é a assinatura do sistema */
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: var(--s-3);
   font-family: var(--f-mono);
-  font-size: 0.74rem;
+  font-size: var(--fs-label);
+  line-height: 1;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--signal);
-  margin-bottom: 22px;
+}
+
+.eyebrow:not(:has(.live-dot))::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
 }
 
 .h2 {
-  font-size: clamp(2.6rem, 6.2vw, 5.8rem);
+  font-size: var(--fs-h2);
   font-weight: 600;
-  line-height: 0.95;
-  letter-spacing: -0.045em;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.042em;
   font-variation-settings: 'opsz' 96;
+  text-wrap: balance;
 }
 
 .h3 {
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
   font-weight: 600;
-  line-height: 1.05;
+  line-height: var(--lh-head);
   letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
 .h2 em,
@@ -202,77 +289,163 @@ ol {
   font-family: var(--f-serif);
   font-style: italic;
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   color: var(--signal);
 }
 
-/* ───────────────────────── Primitivas ───────────────────────── */
+/* ═════════════════════════ Pad (assinatura) ═════════════════════════ */
+/* losango de 6px: nó de circuito. Usado em eyebrows, status, nós do barramento e marcadores. */
+.pad {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+
+/* cantoneiras de enquadramento — mesma linguagem do palco, capa e retrato */
+.brackets {
+  position: relative;
+}
+
+.brackets::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  z-index: 3;
+  pointer-events: none;
+  --c: var(--bracket, rgba(158, 210, 255, 0.7));
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / 16px 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 0 / 1px 16px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 16px 1px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 1px 16px no-repeat;
+}
+
+/* ═════════════════════════ Botões ═════════════════════════ */
 .btn {
-  --h: 52px;
+  --h: 48px;
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--s-1);
   height: var(--h);
-  padding: 0 22px;
-  border-radius: 10px;
-  font-size: 0.98rem;
+  padding: 0 var(--s-3);
+  border-radius: var(--r-md);
+  font-size: 0.9375rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  line-height: 1;
+  letter-spacing: -0.005em;
   white-space: nowrap;
   transition:
-    background-color 0.3s var(--ease),
-    color 0.3s var(--ease),
-    border-color 0.3s var(--ease),
-    transform 0.3s var(--ease);
+    background-color var(--t-med) var(--ease),
+    background-position var(--t-slow) var(--ease),
+    color var(--t-med) var(--ease),
+    border-color var(--t-med) var(--ease),
+    box-shadow var(--t-med) var(--ease),
+    transform var(--t-fast) var(--ease);
 }
 
 .btn svg {
-  transition: transform 0.35s var(--ease);
+  flex: none;
+  transition: transform var(--t-med) var(--ease);
 }
 
 .btn:hover svg {
-  transform: translateX(4px);
+  transform: translateX(3px);
 }
 
+.btn:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+/* primário: azul da marca com luz no topo; hover clareia, não inverte */
 .btn--solid {
-  background: var(--blue);
   color: #fff;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 10px 30px -12px rgba(0, 98, 185, 0.8);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, var(--blue-hi), var(--blue));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    var(--glow);
 }
 
 .btn--solid:hover {
-  background: var(--signal);
-  color: var(--ink);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, #2a86e8, var(--blue-hi));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 20px 48px -16px rgba(22, 115, 214, 0.85);
 }
 
+.btn--solid:active {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 2px rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* secundário: vidro escuro com borda fina */
 .btn--ghost {
-  border: 1px solid var(--line-2);
   color: var(--text);
+  background: rgba(130, 180, 240, 0.03);
+  box-shadow: inset 0 0 0 1px var(--line-2), var(--hl);
 }
 
 .btn--ghost:hover {
-  border-color: var(--signal);
-  color: var(--signal);
+  background: rgba(130, 180, 240, 0.07);
+  box-shadow: inset 0 0 0 1px var(--line-3), var(--hl);
+}
+
+.btn--ghost:active {
+  background: rgba(130, 180, 240, 0.1);
 }
 
 .btn--small {
   --h: 40px;
-  padding: 0 14px;
-  font-size: 0.86rem;
-  border: 1px solid var(--line-2);
+  padding: 0 var(--s-2);
+  font-size: var(--fs-small);
+  color: var(--text);
+  background: rgba(130, 180, 240, 0.04);
+  box-shadow: inset 0 0 0 1px var(--line-2), var(--hl);
 }
 
-.btn--small:hover,
-.btn--small.is-done {
-  border-color: var(--live);
-  color: var(--live);
+.btn--small:hover {
+  background: rgba(130, 180, 240, 0.08);
+  box-shadow: inset 0 0 0 1px var(--line-3), var(--hl);
 }
 
 .btn--small:hover svg {
   transform: none;
 }
 
+.btn--small.is-done {
+  color: var(--live);
+  background: rgba(212, 255, 58, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(212, 255, 58, 0.45);
+}
+
+.btn--small.is-done svg {
+  animation: pop 0.4s var(--ease);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.4);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+}
+
+/* ═════════════════════════ LED "ao vivo" ═════════════════════════ */
 .live-dot {
   position: relative;
   width: 8px;
@@ -280,7 +453,7 @@ ol {
   flex: none;
   border-radius: 50%;
   background: var(--live);
-  box-shadow: 0 0 12px rgba(212, 255, 58, 0.6);
+  box-shadow: 0 0 0 3px rgba(212, 255, 58, 0.12), 0 0 12px rgba(212, 255, 58, 0.5);
 }
 
 .live-dot::after {
@@ -289,56 +462,83 @@ ol {
   inset: -4px;
   border-radius: 50%;
   border: 1px solid var(--live);
-  animation: pulse 2.4s var(--ease) infinite;
+  animation: pulse 2.8s var(--ease) infinite;
 }
 
 @keyframes pulse {
   0% {
     transform: scale(0.6);
-    opacity: 0.9;
+    opacity: 0.8;
   }
+  70%,
   100% {
-    transform: scale(2.2);
+    transform: scale(2);
     opacity: 0;
   }
 }
 
+/* ═════════════════════════ Chips ═════════════════════════ */
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--s-1);
   height: 36px;
   padding: 0 14px;
-  border: 1px solid var(--line-2);
-  border-radius: 8px;
-  font-size: 0.86rem;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  line-height: 1;
   color: var(--muted);
-  transition: all 0.25s var(--ease);
+  background: rgba(130, 180, 240, 0.02);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  transition:
+    color var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
 }
 
 .chip:hover {
   color: var(--text);
-  border-color: var(--signal);
+  background: rgba(130, 180, 240, 0.06);
+  box-shadow: inset 0 0 0 1px var(--line-3);
+}
+
+.chip:active {
+  transform: scale(0.97);
 }
 
 .chip.is-active {
-  background: var(--text);
-  border-color: var(--text);
   color: var(--ink);
+  background: var(--text);
+  box-shadow: inset 0 0 0 1px var(--text), var(--e-1);
 }
 
 .chip--tech.is-active {
   background: var(--live);
-  border-color: var(--live);
+  box-shadow: inset 0 0 0 1px var(--live), 0 0 0 4px rgba(212, 255, 58, 0.1);
 }
 
+.chip--tech svg {
+  opacity: 0.7;
+  transition: opacity var(--t-fast), transform var(--t-med) var(--ease);
+}
+
+.chip--tech:hover svg {
+  opacity: 1;
+  transform: rotate(90deg);
+}
+
+/* ═════════════════════════ Status ═════════════════════════ */
+/* papéis: LED redondo = ao vivo · pad = estado estático */
 .status {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: var(--s-1);
   font-family: var(--f-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  font-size: var(--fs-label);
+  line-height: 1;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--muted);
   white-space: nowrap;
@@ -346,14 +546,25 @@ ol {
 
 .status::before {
   content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
+  width: 5px;
+  height: 5px;
+  flex: none;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
 }
 
 .status--live {
   color: var(--live);
+}
+
+.status--live::before {
+  width: 6px;
+  height: 6px;
+  border: 0;
+  border-radius: 50%;
+  transform: none;
+  background: currentColor;
+  box-shadow: 0 0 8px rgba(212, 255, 58, 0.6);
 }
 
 .status--open,
@@ -365,29 +576,32 @@ ol {
   display: none;
 }
 
-/* ───────────────────────── Reveal ───────────────────────── */
+/* ═════════════════════════ Reveal ═════════════════════════ */
 [data-reveal] {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translateY(16px);
+  filter: blur(4px);
   transition:
-    opacity 0.9s var(--ease),
-    transform 1s var(--ease);
+    opacity 0.8s var(--ease),
+    transform 0.9s var(--ease),
+    filter 0.8s var(--ease);
   transition-delay: var(--d, 0ms);
 }
 
 [data-reveal].is-in {
   opacity: 1;
   transform: none;
+  filter: none;
 }
 
-/* ───────────────────────── View transitions ───────────────────────── */
+/* ═════════════════════════ View transitions ═════════════════════════ */
 ::view-transition-group(*) {
   animation-duration: 0.6s;
   animation-timing-function: var(--ease);
 }
 
 ::view-transition-old(root) {
-  animation: vt-out 0.45s var(--ease-in-out) both;
+  animation: vt-out 0.4s var(--ease-in-out) both;
 }
 
 ::view-transition-new(root) {
@@ -397,15 +611,14 @@ ol {
 @keyframes vt-out {
   to {
     opacity: 0;
-    transform: translateY(-24px);
-    filter: blur(4px);
+    transform: translateY(-16px);
   }
 }
 
 @keyframes vt-in {
   from {
     opacity: 0;
-    transform: translateY(32px);
+    transform: translateY(24px);
   }
 }
 
@@ -421,5 +634,6 @@ ol {
 
   [data-reveal] {
     transform: none;
+    filter: none;
   }
 }

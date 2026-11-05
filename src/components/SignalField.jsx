@@ -190,29 +190,54 @@ export default function SignalField({ onPick }) {
         const p = pos.get(n.id)
         const isHover = hover?.id === n.id
         const linked = hover && EDGES.some((e) => e.includes(hover.id) && e.includes(n.id))
-        const r = n.hub ? 5.5 : 3.6
-        if (isHover) {
+        // nós são "pads" (losangos) — a mesma forma dos nós do barramento e dos eyebrows
+        const r = n.hub ? 6 : 4.2
+        const pad = (size) => {
           ctx.beginPath()
-          ctx.arc(p.x, p.y, 16, 0, Math.PI * 2)
-          ctx.strokeStyle = 'rgba(96,179,255,0.35)'
+          ctx.moveTo(p.x, p.y - size)
+          ctx.lineTo(p.x + size, p.y)
+          ctx.lineTo(p.x, p.y + size)
+          ctx.lineTo(p.x - size, p.y)
+          ctx.closePath()
+        }
+        if (isHover) {
+          pad(14)
+          ctx.lineWidth = 1
+          ctx.strokeStyle = 'rgba(96,179,255,0.4)'
           ctx.stroke()
         }
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, r, 0, Math.PI * 2)
-        ctx.fillStyle = isHover ? C.node : C.ink
+        pad(r)
+        ctx.fillStyle = isHover ? C.live : n.hub ? '#0062b9' : C.ink
         ctx.fill()
-        ctx.lineWidth = 1.4
-        ctx.strokeStyle = C.node
+        ctx.lineWidth = 1.25
+        ctx.strokeStyle = isHover ? C.live : C.node
         ctx.stroke()
 
         const right = n.x < 0.8
         ctx.textAlign = right ? 'left' : 'right'
         ctx.fillStyle = isHover || linked ? C.labelHot : C.label
-        const lx = p.x + (right ? 12 : -12)
+        const lx = p.x + (right ? 14 : -14)
         ctx.fillText(n.label.toUpperCase(), lx, p.y)
         if (isHover) {
+          const cta = 'VER PROJETOS'
+          const tw = ctx.measureText(cta).width
+          const ty = p.y + 18
           ctx.fillStyle = C.live
-          ctx.fillText('VER PROJETOS →', lx, p.y + 16)
+          ctx.fillText(cta, lx, ty)
+          // seta desenhada no mesmo traço da família de ícones
+          const ax = right ? lx + tw + 6 : lx + 6
+          const s = 4
+          ctx.beginPath()
+          ctx.moveTo(ax, ty)
+          ctx.lineTo(ax + s * 2, ty)
+          ctx.moveTo(ax + s, ty - s)
+          ctx.lineTo(ax + s * 2, ty)
+          ctx.lineTo(ax + s, ty + s)
+          ctx.strokeStyle = C.live
+          ctx.lineWidth = 1.5
+          ctx.lineCap = 'round'
+          ctx.lineJoin = 'round'
+          ctx.stroke()
         }
       })
     }

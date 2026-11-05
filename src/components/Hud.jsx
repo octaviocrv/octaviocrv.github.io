@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { asset } from '../utils/asset'
 import { links } from '../data/profile'
+import { IconArrowUpRight } from './Icons'
 
 export const SECTIONS = [
   { id: 'inicio', label: 'Início', route: '/' },
@@ -112,6 +113,7 @@ export default function Hud() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [progress, setProgress] = useState(0)
   const [quiet, setQuiet] = useState(true)
+  const [scrolled, setScrolled] = useState(false)
   const lastY = useRef(0)
   const menuBtn = useRef(null)
 
@@ -131,6 +133,7 @@ export default function Hud() {
         const max = document.documentElement.scrollHeight - window.innerHeight
         setProgress(max > 0 ? y / max : 0)
         setQuiet(y < window.innerHeight * 0.55)
+        setScrolled(y > 8)
         if (y < 160) setHidden(false)
         else if (y > lastY.current + 4) setHidden(true)
         else if (y < lastY.current - 4) setHidden(false)
@@ -162,7 +165,7 @@ export default function Hud() {
 
   return (
     <>
-      <header className={`hud-top${hidden && !menuOpen ? ' is-hidden' : ''}${menuOpen ? ' is-menu' : ''}`}>
+      <header className={`hud-top${scrolled ? ' is-scrolled' : ''}${hidden && !menuOpen ? ' is-hidden' : ''}${menuOpen ? ' is-menu' : ''}`}>
         <SectionLink id="inicio" className="brand" aria-label="Octávio Augusto — início">
           <img src={asset('/assets/img/avatar.webp')} alt="" className="brand__avatar" width="34" height="34" />
           <span className="brand__name">
@@ -222,9 +225,9 @@ export default function Hud() {
           </ol>
         </nav>
         <div className="menu__foot">
-          <a href={links.whatsapp} target="_blank" rel="noreferrer">WhatsApp ↗</a>
-          <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn ↗</a>
-          <a href={links.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+          <a href={links.whatsapp} target="_blank" rel="noreferrer">WhatsApp <IconArrowUpRight size={14} /></a>
+          <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn <IconArrowUpRight size={14} /></a>
+          <a href={links.github} target="_blank" rel="noreferrer">GitHub <IconArrowUpRight size={14} /></a>
         </div>
       </div>
 

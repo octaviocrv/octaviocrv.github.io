@@ -12,7 +12,7 @@ export function statusOf(p) {
   return { key: 'private', label: 'Privado' }
 }
 
-function FloatingPreview({ project, visible }) {
+function FloatingPreview({ project, visible, armed }) {
   const ref = useRef(null)
   const target = useRef({ x: 0, y: 0 })
   const cur = useRef({ x: 0, y: 0 })
@@ -45,9 +45,11 @@ function FloatingPreview({ project, visible }) {
   return (
     <div ref={ref} className={`float-preview${visible ? ' is-visible' : ''}`} aria-hidden="true">
       <div className="float-preview__inner">
-        {projectsData.map((p) => (
-          <img key={p.id} src={p.thumb} alt="" className={p.id === project?.id ? 'is-current' : ''} loading="lazy" />
-        ))}
+        {/* miniaturas carregam no primeiro hover da lista (lazy não é confiável em elemento fixo) */}
+        {armed &&
+          projectsData.map((p) => (
+            <img key={p.id} src={p.thumb} alt="" className={p.id === project?.id ? 'is-current' : ''} decoding="async" />
+          ))}
       </div>
     </div>
   )
@@ -55,10 +57,19 @@ function FloatingPreview({ project, visible }) {
 
 export default function ProjectIndex({ filter, setFilter }) {
   const [hovered, setHovered] = useState(null)
+  const [armed, setArmed] = useState(false)
   const finePointer = useMediaQuery('(hover: hover) and (pointer: fine)')
   const navigate = useNavigate()
 
   const tech = filter.type === 'tech' ? techByName(filter.value) : null
+
+  // a prévia segue o ponteiro: some ao rolar e volta no próximo movimento do mouse
+  useEffect(() => {
+    if (!hovered) return undefined
+    const off = () => setHovered(null)
+    window.addEventListener('scroll', off, { passive: true, once: true })
+    return () => window.removeEventListener('scroll', off)
+  }, [hovered])
 
   const matches = useMemo(() => {
     return projectsData.map((p) => {
@@ -125,7 +136,7 @@ export default function ProjectIndex({ filter, setFilter }) {
         </p>
       </div>
 
-      <ol className="index__list" onPointerLeave={() => setHovered(null)}>
+      <ol className="index__list" onPointerEnter={() => setArmed(true)} onPointerLeave={() => setHovered(null)}>
         {projectsData.map((p, i) => {
           const st = statusOf(p)
           const on = matches[i]
@@ -137,8 +148,7 @@ export default function ProjectIndex({ filter, setFilter }) {
                   className="row"
                   tabIndex={on ? 0 : -1}
                   onClick={(e) => open(e, p)}
-                  onPointerEnter={() => setHovered(p)}
-                  onFocus={() => setHovered(p)}
+                  onPointerMove={() => setHovered(p)}
                 >
                   <span className="row__idx mono">{String(i + 1).padStart(2, '0')}</span>
                   <span className="row__thumb" aria-hidden="true">
@@ -163,7 +173,7 @@ export default function ProjectIndex({ filter, setFilter }) {
         })}
       </ol>
 
-      {finePointer && <FloatingPreview project={hovered} visible={Boolean(hovered)} />}
+      {finePointer && <FloatingPreview project={hovered} visible={Boolean(hovered)} armed={armed} />}
     </section>
   )
 }

@@ -64,7 +64,7 @@ export default function Contact() {
                 <span className="channel__n mono">0{i + 1}</span>
                 <span className="channel__label">{c.label}</span>
                 <span className="channel__hint">{c.hint}</span>
-                <IconArrowUpRight className="channel__icon" width="22" height="22" />
+                <IconArrowUpRight className="channel__icon" size={24} strokeWidth={1.5} />
               </a>
             </li>
           ))}

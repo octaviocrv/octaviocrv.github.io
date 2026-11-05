@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { projectsData, kinds, projectIndex } from '../data/projects'
 import { SectionLink } from '../components/Hud'
-import { IconArrow, IconArrowUpRight, IconLock } from '../components/Icons'
+import { IconArrow, IconArrowLeft, IconArrowUpRight, IconLock } from '../components/Icons'
 import { statusOf } from '../sections/ProjectIndex'
 import { useRevealAll, withViewTransition } from '../hooks/motion'
 import Footer from '../sections/Footer'
@@ -43,7 +43,7 @@ export default function ProjectDetail({ project }) {
     <main id="conteudo" className="detail">
       <header className="detail__hero">
         <SectionLink id="projetos" className="detail__back mono">
-          ← Índice de trabalhos
+          <IconArrowLeft size={14} /> Índice de trabalhos
         </SectionLink>
 
         <p className="eyebrow">
@@ -94,7 +94,7 @@ export default function ProjectDetail({ project }) {
         )}
       </header>
 
-      <figure className="detail__cover">
+      <figure className="detail__cover brackets">
         <img src={project.cover} alt={`Imagem do projeto ${project.name}`} style={{ viewTransitionName: 'project-cover' }} />
       </figure>
 
@@ -150,7 +150,7 @@ export default function ProjectDetail({ project }) {
 
         {project.privateNote && (
           <aside className="note" data-reveal>
-            <IconLock width="16" height="16" />
+            <IconLock size={16} />
             <p>{project.privateNote}</p>
           </aside>
         )}
@@ -161,7 +161,7 @@ export default function ProjectDetail({ project }) {
         <span className="next__name" style={{ viewTransitionName: `project-title-${next.id}` }}>
           {next.name}
         </span>
-        <IconArrow className="next__icon" width="40" height="40" />
+        <IconArrow className="next__icon" size={40} strokeWidth={1.5} />
       </Link>
 
       <Footer />
