@@ -1,130 +1,170 @@
-import React from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { projectsData, kinds, projectIndex } from '../data/projects'
+import { SectionLink } from '../components/Hud'
+import { IconArrow, IconArrowUpRight, IconLock } from '../components/Icons'
+import { statusOf } from '../sections/ProjectIndex'
+import { useRevealAll, withViewTransition } from '../hooks/motion'
+import Footer from '../sections/Footer'
+
+const real = (url) => url && url !== '#'
+
+/* Evita repetir o nome: "AI Voice Receptionist • Automação…" → "Automação…" */
+const subtitleOf = (p) => {
+  const t = p.title.trim()
+  if (!t.toLowerCase().startsWith(p.name.toLowerCase())) return t
+  return t.slice(p.name.length).replace(/^[\s•·—–-]+/, '').trim()
+}
 
 export default function ProjectDetail({ project }) {
-  const highlightSentence =
-    'Por ser um projeto empresarial sob NDA e em produção, o código-fonte não está disponível publicamente.';
+  const navigate = useNavigate()
+  const idx = projectIndex(project)
+  const next = projectsData[(idx + 1) % projectsData.length]
+  const st = statusOf(project)
+  useRevealAll([project.id])
 
-  const renderOverviewText = (text) => {
-    if (typeof text !== 'string') return text;
+  useEffect(() => {
+    const prev = document.title
+    document.title = `${project.name} — Octávio Augusto`
+    return () => {
+      document.title = prev
+    }
+  }, [project])
 
-    const sentenceIndex = text.indexOf(highlightSentence);
-    if (sentenceIndex === -1) return text;
+  const goNext = (e) => {
+    if (e.metaKey || e.ctrlKey) return
+    e.preventDefault()
+    withViewTransition(() => navigate(`/project-${next.id}`))
+  }
 
-    const before = text.slice(0, sentenceIndex);
-    const after = text.slice(sentenceIndex + highlightSentence.length);
-
-    return (
-      <>
-        {before}
-        <span className="project-details__nda-highlight">{highlightSentence}</span>
-        {after}
-      </>
-    );
-  };
+  const [lead, ...rest] = project.overview
 
   return (
-    <>
-      <Header />
+    <main id="conteudo" className="detail">
+      <header className="detail__hero">
+        <SectionLink id="projetos" className="detail__back mono">
+          ← Índice de trabalhos
+        </SectionLink>
 
-      <section className="project-cs-hero">
-        <div className="project-cs-hero__content animate-fade-in-up">
-          <h1 className="heading-primary">{project.title}</h1>
-          <div className="project-cs-hero__info">
-            <p className="text-primary">{project.heroDesc}</p>
-          </div>
-        </div>
-      </section>
+        <p className="eyebrow">
+          Projeto {String(idx + 1).padStart(2, '0')} / {String(projectsData.length).padStart(2, '0')} · {kinds[project.kind]}
+        </p>
+        <h1 className="detail__title" style={{ viewTransitionName: `project-title-${project.id}` }}>
+          {project.name}
+        </h1>
+        {subtitleOf(project) && <p className="detail__subtitle">{subtitleOf(project)}</p>}
+        <p className="detail__lede">{project.heroDesc}</p>
 
-      <section className="project-details">
-        <div className="main-container">
-          
-          <div className="project-details__showcase-img-cont animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <img
-              src={project.image}
-              alt={`Demonstração do projeto ${project.title}`}
-              className="project-details__showcase-img"
-            />
-          </div>
-
-          <div className="project-details__grid">
-            
-            <div className="project-details__main-col">
-              <div className="project-details__section">
-                <h3 className="project-details__content-title">Visão Geral do Projeto</h3>
-                <div className="project-details__desc">
-                  {project.overview.map((para, i) => (
-                    <p key={i} className="project-details__desc-para">
-                      {renderOverviewText(para)}
-                    </p>
-                  ))}
-                </div>
-              </div>
-
-              {Array.isArray(project.challenges) && project.challenges.length > 0 && (
-                <div className="project-details__section">
-                  <h3 className="project-details__content-title">Principais Desafios & Soluções</h3>
-                  <div className="project-details__challenges-grid">
-                    {project.challenges.map((challenge, i) => (
-                      <div key={challenge.title || i} className="project-details__challenge-card">
-                        <h4 className="project-details__challenge-title">{challenge.title}</h4>
-                        <p className="project-details__challenge-desc">{challenge.solution}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+        <dl className="detail__meta">
+          {project.client && (
+            <div>
+              <dt className="mono">Cliente</dt>
+              <dd>{project.client}</dd>
             </div>
-
-            <div className="project-details__side-col">
-              
-              <div className="project-details__side-card">
-                <h3 className="project-details__content-title project-details__content-title--sm">Ferramentas Utilizadas</h3>
-                <div className="project-details__tech-list">
-                  {project.tools.map((tool) => (
-                    <span key={tool} className="project-details__tech-pill">
-                      {tool}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Bloco de ações agora está condicionado */}
-              {(project.liveLink || project.codeLink) && (
-                <div className="project-details__side-card">
-                  <h3 className="project-details__content-title project-details__content-title--sm">Ações</h3>
-                  <div className="project-details__links-container">
-                    {project.liveLink && (
-                      <a
-                        href={project.liveLink}
-                        className="btn btn--theme project-details__btn-full"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Acessar Aplicação &rarr;
-                      </a>
-                    )}
-                    {project.codeLink && (
-                      <a
-                        href={project.codeLink}
-                        className="btn btn--outline-dark project-details__btn-full"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Ver Código Fonte
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-
-            </div>
+          )}
+          <div>
+            <dt className="mono">Status</dt>
+            <dd>
+              <span className={`status status--${st.key}`}>{st.label}</span>
+            </dd>
           </div>
-        </div>
-      </section>
+          <div>
+            <dt className="mono">Categoria</dt>
+            <dd>{kinds[project.kind]}</dd>
+          </div>
+          <div>
+            <dt className="mono">Código</dt>
+            <dd>{real(project.codeLink) ? 'Aberto no GitHub' : project.isPrivate ? 'Privado (NDA)' : '—'}</dd>
+          </div>
+        </dl>
+
+        {(real(project.liveLink) || real(project.codeLink)) && (
+          <div className="detail__actions">
+            {real(project.liveLink) && (
+              <a href={project.liveLink} target="_blank" rel="noreferrer" className="btn btn--solid">
+                Acessar aplicação <IconArrowUpRight />
+              </a>
+            )}
+            {real(project.codeLink) && (
+              <a href={project.codeLink} target="_blank" rel="noreferrer" className="btn btn--ghost">
+                Ver código-fonte <IconArrowUpRight />
+              </a>
+            )}
+          </div>
+        )}
+      </header>
+
+      <figure className="detail__cover">
+        <img src={project.cover} alt={`Imagem do projeto ${project.name}`} style={{ viewTransitionName: 'project-cover' }} />
+      </figure>
+
+      <div className="detail__body">
+        <section className="detail__block" data-reveal aria-labelledby="ov">
+          <h2 id="ov" className="detail__label mono">Visão geral</h2>
+          <div className="detail__prose">
+            <p className="detail__prose-lead">{lead}</p>
+            {rest.map((para) => (
+              <p key={para.slice(0, 32)}>{para}</p>
+            ))}
+          </div>
+        </section>
+
+        {project.challenges?.length > 0 && (
+          <section className="detail__block" aria-labelledby="ch">
+            <h2 id="ch" className="detail__label mono" data-reveal>Desafios & soluções</h2>
+            <ol className="challenges">
+              {project.challenges.map((c, i) => (
+                <li key={c.title} data-reveal>
+                  <span className="mono challenges__n">0{i + 1}</span>
+                  <h3>{c.title}</h3>
+                  <p>{c.solution}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {project.results?.length > 0 && (
+          <section className="detail__block" aria-labelledby="rs">
+            <h2 id="rs" className="detail__label mono" data-reveal>Resultados</h2>
+            <ul className="v-result v-result--page" style={{ '--lp': 1 }}>
+              {project.results.map((r, k) => (
+                <li key={r.metric} style={{ '--k': k }} data-reveal>
+                  <span className="v-result__value">{r.value}</span>
+                  <span className="v-result__metric">{r.metric}</span>
+                  <span className="v-result__desc">{r.desc}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section className="detail__block" data-reveal aria-labelledby="tl">
+          <h2 id="tl" className="detail__label mono">Ferramentas</h2>
+          <ul className="tools">
+            {project.tools.map((t) => (
+              <li key={t}>{t}</li>
+            ))}
+          </ul>
+        </section>
+
+        {project.privateNote && (
+          <aside className="note" data-reveal>
+            <IconLock width="16" height="16" />
+            <p>{project.privateNote}</p>
+          </aside>
+        )}
+      </div>
+
+      <Link to={`/project-${next.id}`} onClick={goNext} className="next">
+        <span className="mono next__label">Próximo projeto · {String(projectIndex(next) + 1).padStart(2, '0')}</span>
+        <span className="next__name" style={{ viewTransitionName: `project-title-${next.id}` }}>
+          {next.name}
+        </span>
+        <IconArrow className="next__icon" width="40" height="40" />
+      </Link>
 
       <Footer />
-    </>
-  );
+    </main>
+  )
 }

@@ -4,6 +4,10 @@ const asset = (path) => `${baseUrl}${path.replace(/^\//, '')}`
 export const projectsData = [
   {
     id: 1,
+    name: 'Self-Payment Terminal',
+    kind: 'produto',
+    cover: asset('/assets/img/projects/p1.webp'),
+    thumb: asset('/assets/img/projects/p1-sm.webp'),
     title: 'Self-Payment Terminal — Solução de Checkout Autônomo para Varejo',
     category: 'Enterprise | React + Docker',
     shortDesc: 'Terminal de auto-pagamento seguro e customizável para Livraria Leitura. Redução de 60-70% no tempo de checkout.',
@@ -53,6 +57,10 @@ export const projectsData = [
   },
   {
     id: 2,
+    name: 'Diagnóstico de Vendas',
+    kind: 'web',
+    cover: asset('/assets/img/projects/p2.webp'),
+    thumb: asset('/assets/img/projects/p2-sm.webp'),
     title: ' Sistema de Diagnóstico Inteligente de Vendas',
     shortDesc: 'Diagnóstico estratégico interativo que mapeia maturidade comercial e identifica gargalos de crescimento.',
     heroDesc:
@@ -68,6 +76,10 @@ export const projectsData = [
   },
   {
     id: 7,
+    name: 'AI Voice Receptionist',
+    kind: 'ia',
+    cover: asset('/assets/img/projects/p7.webp'),
+    thumb: asset('/assets/img/projects/p7-sm.webp'),
     title: 'AI Voice Receptionist • Automação de Atendimento',
     shortDesc: 'Sistema de atendimento por voz com IA para empresas de marketing, automatizando ligações, qualificação de leads e agendamentos.',
 
@@ -109,6 +121,10 @@ export const projectsData = [
   },
   {
     id: 4,
+    name: 'Quintal Voo Livre',
+    kind: 'web',
+    cover: asset('/assets/img/projects/p4.webp'),
+    thumb: asset('/assets/img/projects/p4-sm.webp'),
     title: 'Quintal Voo Livre do Saber - Website Institucional',
     shortDesc: 'Website institucional responsivo para escola infantil com foco em experiência do usuário e conversão de leads.',
     heroDesc:
@@ -124,6 +140,10 @@ export const projectsData = [
   },
   {
     id: 8,
+    name: 'WhatsApp & IA · Planads',
+    kind: 'ia',
+    cover: asset('/assets/img/projects/p8.webp'),
+    thumb: asset('/assets/img/projects/p8-sm.webp'),
     title: 'Automação WhatsApp & IA • Planads',
     shortDesc: 'Fluxo avançado no n8n integrando disparos inteligentes via WhatsApp, processamento de IA e gestão de leads no Pipedrive.',
 
@@ -147,6 +167,10 @@ export const projectsData = [
   },
   {
     id: 3,
+    name: 'Autocomplete ViaCEP',
+    kind: 'web',
+    cover: asset('/assets/img/projects/p3.webp'),
+    thumb: asset('/assets/img/projects/p3-sm.webp'),
     title: 'Integração API ViaCEP - Autocompletar Endereços',
     shortDesc: 'Solução de preenchimento automático de formulários usando API ViaCEP para otimizar experiência do usuário.',
     heroDesc:
@@ -162,6 +186,10 @@ export const projectsData = [
   },
   {
     id: 9,
+    name: 'Funil Webinar V8',
+    kind: 'ia',
+    cover: asset('/assets/img/projects/p9.webp'),
+    thumb: asset('/assets/img/projects/p9-sm.webp'),
     title: 'Funil de Vendas Webinar • V8',
     shortDesc: 'Ecossistema de integrações para rastreamento de VSL, captação de leads e processamento de vendas via Kiwify.',
 
@@ -185,6 +213,10 @@ export const projectsData = [
   },
   {
     id: 6,
+    name: 'Game Catalog',
+    kind: 'web',
+    cover: asset('/assets/img/projects/p6.webp'),
+    thumb: asset('/assets/img/projects/p6-sm.webp'),
     title: 'Game Catalog • RAWG API',
     shortDesc: 'Aplicação web para exploração de jogos utilizando dados em tempo real da API RAWG, com busca, listagem dinâmica e páginas de detalhamento.',
 
@@ -206,6 +238,10 @@ export const projectsData = [
   },
   {
     id: 10,
+    name: 'Funil de Lançamento',
+    kind: 'ia',
+    cover: asset('/assets/img/projects/p10.webp'),
+    thumb: asset('/assets/img/projects/p10-sm.webp'),
     title: 'Lançamento • Funil de Vendas Automatizado',
     shortDesc: 'Ecossistema de integrações para rastreamento de VSL, captação de leads e processamento de vendas via Kiwify.',
 
@@ -225,6 +261,10 @@ export const projectsData = [
   },
   {
     id: 5,
+    name: 'Divide Já',
+    kind: 'web',
+    cover: asset('/assets/img/projects/p5.webp'),
+    thumb: asset('/assets/img/projects/p5-sm.webp'),
     title: 'Divide Já • Divisão de Contas',
     shortDesc: 'Aplicação web para divisão inteligente de contas entre amigos, permitindo gerenciar mesas, itens e valores individuais de forma automática e transparente.',
 
@@ -246,6 +286,10 @@ export const projectsData = [
   },
   {
     id: 11,
+    name: 'CRM Multi-Nicho',
+    kind: 'ia',
+    cover: asset('/assets/img/projects/p11.webp'),
+    thumb: asset('/assets/img/projects/p11-sm.webp'),
     title: 'Arquitetura e Implementação de CRM • Multi-Nicho',
     shortDesc: 'Estruturação completa, integração e automação avançada de CRMs (Pipedrive, Kommo) para otimização de processos comerciais.',
 
@@ -276,3 +320,11 @@ export const projectsData = [
     privateNote: 'Infraestrutura interna e restrita. O projeto gerencia bancos de dados de leads, fluxos operacionais privados e estratégias comerciais sob NDA.',
   }
 ]
+
+export const kinds = {
+  produto: 'Produto & Enterprise',
+  web: 'Web & Front-end',
+  ia: 'Automação & IA',
+}
+
+export const projectIndex = (project) => projectsData.findIndex((p) => p.id === project.id)
