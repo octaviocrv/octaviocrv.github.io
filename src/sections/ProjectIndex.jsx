@@ -4,6 +4,7 @@ import { projectsData, kinds } from '../data/projects'
 import { projectUsesTech, techByName } from '../data/profile'
 import { useMediaQuery, useReducedMotion, withViewTransition } from '../hooks/motion'
 import { IconArrowUpRight, IconClose, IconLock } from '../components/Icons'
+import { hl } from '../components/Hl'
 
 export function statusOf(p) {
   if (p.status === 'Em Produção') return { key: 'live', label: 'Em produção' }
@@ -90,17 +91,12 @@ export default function ProjectIndex({ filter, setFilter }) {
   const chips = [{ type: 'all', value: null, label: 'Todos' }, ...Object.entries(kinds).map(([k, label]) => ({ type: 'kind', value: k, label }))]
 
   return (
-    <section id="projetos" data-section="projetos" className="index" aria-labelledby="index-title">
-      <header className="index__head">
-        <div data-reveal>
-          <p className="eyebrow">02 — Projetos</p>
-          <h2 id="index-title" className="h2">
-            Índice de <em>trabalhos.</em>
-          </h2>
-        </div>
-        <p className="index__intro" data-reveal>
-          Sistemas em produção, produtos sob NDA e projetos abertos. Cada linha leva ao problema,
-          à solução e às ferramentas usadas.
+    <section id="projetos" data-section="projetos" className="index container" aria-labelledby="index-title">
+      <header className="section-head section-head--split" data-reveal>
+        <h2 id="index-title" className="h2">Todos os trabalhos</h2>
+        <p className="lede">
+          Sistemas em produção, projetos sob NDA e código aberto. Em cada um: problema, solução e
+          ferramentas.
         </p>
       </header>
 
@@ -131,8 +127,8 @@ export default function ProjectIndex({ filter, setFilter }) {
             </button>
           )}
         </div>
-        <p className="mono index__count" aria-live="polite">
-          {String(count).padStart(2, '0')} / {String(projectsData.length).padStart(2, '0')} projetos
+        <p className="index__count tnum" aria-live="polite">
+          {count} de {projectsData.length} projetos
         </p>
       </div>
 
@@ -150,15 +146,14 @@ export default function ProjectIndex({ filter, setFilter }) {
                   onClick={(e) => open(e, p)}
                   onPointerMove={() => setHovered(p)}
                 >
-                  <span className="row__idx mono">{String(i + 1).padStart(2, '0')}</span>
                   <span className="row__thumb" aria-hidden="true">
                     <img src={p.thumb} alt="" loading="lazy" />
                   </span>
                   <span className="row__main">
                     <span className="row__name" style={{ viewTransitionName: `project-title-${p.id}` }}>{p.name}</span>
-                    <span className="row__desc">{p.shortDesc}</span>
+                    <span className="row__desc">{hl(p.shortDesc)}</span>
                   </span>
-                  <span className="row__kind mono">{kinds[p.kind]}</span>
+                  <span className="row__kind" data-kind={p.kind}>{kinds[p.kind]}</span>
                   <span className={`row__status status status--${st.key}`}>
                     {st.key === 'private' && <IconLock />}
                     {st.label}

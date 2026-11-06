@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T21:30:00-03:00",
+  "title": "Design System: Octávio Augusto — Portfólio",
+  "extensions": {
+    "colorMeta": {
+      "accent": { "role": "primary", "displayName": "Azul de Ação", "tonalRamp": ["#0d1a52", "#132678", "#1a39b8", "#2448d8", "#4f6ce3", "#8197ec", "#b9c6f5", "#ecf0ff"] },
+      "ink": { "role": "neutral", "displayName": "Tinta Marinho", "tonalRamp": ["#0b1220", "#1c2434", "#3a4354", "#5b6474", "#8a919d", "#cfd5de", "#e3e6eb", "#f6f7f9"] },
+      "live": { "role": "tertiary", "displayName": "Em Produção", "tonalRamp": ["#04301f", "#075236", "#0b7a53", "#2f9a73", "#62b896", "#9cd5bd", "#cdeadd", "#e6f5ee"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Título do hero e da faixa de contato." },
+      "headline": { "displayName": "Headline", "purpose": "Títulos de seção." },
+      "code": { "displayName": "Code", "purpose": "Somente código, eventos e nomes de arquivo." }
+    },
+    "shadows": [
+      { "name": "shadow-sm", "value": "0 1px 2px rgb(11 18 32 / 0.06), 0 1px 1px rgb(11 18 32 / 0.04)", "purpose": "Controles e abas ativas." },
+      { "name": "shadow", "value": "0 2px 4px rgb(11 18 32 / 0.04), 0 14px 32px -10px rgb(11 18 32 / 0.16)", "purpose": "Legendas flutuantes e elementos elevados." },
+      { "name": "shadow-lg", "value": "0 4px 10px rgb(11 18 32 / 0.05), 0 36px 70px -24px rgb(11 18 32 / 0.32)", "purpose": "Fotos, palco do case, capa de projeto." }
+    ],
+    "motion": [
+      { "name": "ease", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Saída exponencial para toda transição de estado e entrada." },
+      { "name": "hero-entrance", "value": "line-up 1.1s + unmask 1.3s", "purpose": "Único momento autoral no carregamento: título sobe, retrato se revela." }
+    ],
+    "breakpoints": [
+      { "name": "phone", "value": "520px" },
+      { "name": "small", "value": "640px" },
+      { "name": "tablet", "value": "900px" },
+      { "name": "desktop", "value": "960px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ação principal (WhatsApp).",
+      "html": "<button class=\"ds-btn-primary\">Tenho um projeto</button>",
+      "css": ".ds-btn-primary{height:48px;padding:0 22px;border:0;border-radius:999px;background:#2448d8;color:#fff;font:600 15px/1 'Geist Variable',system-ui,sans-serif;box-shadow:0 1px 2px rgb(36 72 216/.3),0 8px 20px -8px rgb(36 72 216/.55);transition:background .2s cubic-bezier(.16,1,.3,1)}.ds-btn-primary:hover{background:#1a39b8}.ds-btn-primary:focus-visible{outline:2px solid #2448d8;outline-offset:3px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ação secundária (LinkedIn, código).",
+      "html": "<button class=\"ds-btn-secondary\">Estou contratando</button>",
+      "css": ".ds-btn-secondary{height:48px;padding:0 22px;border:0;border-radius:999px;background:#fff;color:#0b1220;font:600 15px/1 'Geist Variable',system-ui,sans-serif;box-shadow:inset 0 0 0 1px #cfd5de,0 1px 2px rgb(11 18 32/.06);transition:box-shadow .2s}.ds-btn-secondary:hover{box-shadow:inset 0 0 0 1px #5b6474}.ds-btn-secondary:focus-visible{outline:2px solid #2448d8;outline-offset:3px}"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Filtro da lista de trabalhos.",
+      "html": "<button class=\"ds-chip\">Web &amp; Front-end</button> <button class=\"ds-chip ds-chip--on\">Todos</button>",
+      "css": ".ds-chip{height:36px;padding:0 16px;border:0;border-radius:999px;background:none;color:#3a4354;font:540 15px/1 'Geist Variable',system-ui,sans-serif;box-shadow:inset 0 0 0 1px #cfd5de;cursor:pointer}.ds-chip:hover{color:#0b1220;box-shadow:inset 0 0 0 1px #5b6474}.ds-chip--on{background:#0b1220;color:#fff;box-shadow:none}"
+    },
+    {
+      "name": "Status Live",
+      "kind": "chip",
+      "refersTo": "status-live",
+      "description": "Selo de sistema em produção.",
+      "html": "<span class=\"ds-status\">Em produção</span>",
+      "css": ".ds-status{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;background:#e6f5ee;color:#0b7a53;font:560 13px/1 'Geist Variable',system-ui,sans-serif}.ds-status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}"
+    },
+    {
+      "name": "Contact Door",
+      "kind": "custom",
+      "refersTo": "door-primary",
+      "description": "Porta de contato na faixa noturna.",
+      "html": "<a class=\"ds-door\" href=\"#\"><span><b>Tenho um projeto</b><small>Conversa direta no WhatsApp</small></span><span>→</span></a>",
+      "css": ".ds-door{display:flex;align-items:center;gap:16px;padding:22px;border-radius:14px;background:#2448d8;color:#edf1f7;text-decoration:none;font-family:'Geist Variable',system-ui,sans-serif;box-shadow:0 16px 36px -14px rgb(36 72 216/.8);transition:transform .35s cubic-bezier(.16,1,.3,1)}.ds-door:hover{transform:translateY(-2px)}.ds-door b{display:block;font-size:18px;font-weight:620}.ds-door small{font-size:15px;color:#dbe3ff}.ds-door span:last-child{margin-left:auto}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Claro, preciso, com a pessoa à vista",
+    "overview": "Portfólio no padrão da categoria executado com acabamento alto (régua: Stripe). Fundo claro, uma família tipográfica, uma cor de ação; as fotos reais do escritório são o único calor. Fecha numa faixa marinho com duas portas: cliente e recrutador.",
+    "keyCharacteristics": ["Geist em tudo", "Um azul de ação", "Fotos reais como calor", "Fechamento marinho com duas portas"],
+    "rules": [
+      { "name": "Uma voz de cor", "body": "Azul só para ação e estado ativo; verde só para 'Em produção'.", "section": "colors" },
+      { "name": "Mono é dado", "body": "Geist Mono apenas para código, eventos e nomes de arquivo.", "section": "typography" }
+    ],
+    "dos": ["Use fotos aprovadas sem repetir", "Mostre só números medidos", "Diga quando a escala é relativa"],
+    "donts": ["Eyebrows/kickers sobre títulos", "Neon, grade HUD, brilho", "Depoimentos ou métricas inventadas"]
+  }
+}

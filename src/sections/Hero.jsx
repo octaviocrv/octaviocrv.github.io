@@ -1,67 +1,73 @@
-import SignalField from '../components/SignalField'
-import { SectionLink } from '../components/Hud'
-import { IconArrow } from '../components/Icons'
-import { projectsData } from '../data/projects'
-import { inProduction } from '../data/profile'
+import { links } from '../data/profile'
+import { asset } from '../utils/asset'
+import { IconArrow, IconLinkedIn, IconPin, IconWhatsApp } from '../components/Icons'
 
-export default function Hero({ onPickTech }) {
+const liveClients = ['Garimpo Auto', 'Lead Finder', 'Sites, assistentes com IA e automações que simplificam processos.']
+
+export default function Hero() {
   return (
     <section id="inicio" data-section="inicio" className="hero" aria-labelledby="hero-title">
-      <div className="hero__grid">
+      <div className="hero__grid container">
         <div className="hero__copy">
-          <p className="eyebrow hero__eyebrow">
-            <span className="live-dot" aria-hidden="true" />
-            Disponível para novos projetos
-          </p>
-
           <h1 id="hero-title" className="hero__title">
-            <span className="line"><span>Eu faço</span></span>
-            <span className="line"><span>sistemas</span></span>
-            <span className="line"><span><em>conversarem.</em></span></span>
+            <span className="hero__line"><span>Muito prazer,</span></span>
+            <span className="hero__line"><span className="hero__accent">sou Octávio.</span></span>
           </h1>
 
-          <p className="hero__lede">
-            Sou <strong>Octávio Augusto</strong>, desenvolvedor Full Stack em Belo Horizonte.
-            Construo interfaces em React, integrações com APIs e automações com IA — do terminal
-            de autoatendimento ao atendente por voz.
+          <p className="lede hero__lede">
+            Seja bem-vindo por aqui! Sou desenvolvedor e atuo na área de tecnologia há 3 anos.
+            Atualmente, trabalho com desenvolvimento full stack, transformando ideias em aplicações
+            que funcionam de verdade. Em sistemas, integrações e automações, participo de todo o
+            processo, da ideia à produção.
           </p>
 
           <div className="hero__cta">
-            <SectionLink id="projetos" className="btn btn--solid">
-              Ver projetos <IconArrow />
-            </SectionLink>
-            <SectionLink id="contato" className="btn btn--ghost">
-              Falar comigo
-            </SectionLink>
+            <a href={links.whatsapp} target="_blank" rel="noreferrer" className="btn btn--primary">
+              <IconWhatsApp size={18} /> Conversar sobre oportunidades
+            </a>
+            <a href={links.linkedin} target="_blank" rel="noreferrer" className="btn btn--secondary">
+              <IconLinkedIn size={18} /> Ver trajetória no LinkedIn
+            </a>
+          </div>
+
+          <div className="hero__proof">
+            <p className="hero__proof-label">Em produção:</p>
+            <ul>
+              {liveClients.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        <figure className="hero__field">
-          <SignalField onPick={onPickTech} />
+        <figure className="hero__portrait">
+          <div className="hero__photo">
+            <img
+              src={asset('/assets/img/me/hero-cutout.webp')}
+              srcSet={`${asset('/assets/img/me/hero-cutout-sm.webp')} 600w, ${asset('/assets/img/me/hero-cutout.webp')} 1008w`}
+              sizes="(max-width: 860px) 92vw, 40vw"
+              alt="Octávio Augusto sorrindo, de braços cruzados, com camisa polo preta"
+              width="1008"
+              height="1350"
+              fetchPriority="high"
+            />
+          </div>
           <figcaption className="hero__caption">
-            <span>FIG. 00</span> Minha stack em produção — toque num nó para ver onde ela foi usada.
+            <IconPin size={16} />
+            <span>
+              Belo Horizonte, MG
+              <small>Disponível para vagas e projetos</small>
+            </span>
           </figcaption>
         </figure>
       </div>
 
-      <dl className="facts">
-        <div className="facts__item">
-          <dt>Especialidade</dt>
-          <dd>Front-end React · Integrações · Automação com IA</dd>
-        </div>
-        <div className="facts__item">
-          <dt>Em produção</dt>
-          <dd><b>{String(inProduction).padStart(2, '0')}</b> sistemas rodando em clientes reais</dd>
-        </div>
-        <div className="facts__item">
-          <dt>Portfólio</dt>
-          <dd><b>{String(projectsData.length).padStart(2, '0')}</b> projetos, do kiosk ao CRM</dd>
-        </div>
-        <div className="facts__item">
-          <dt>Formação</dt>
-          <dd>Sistemas de Informação · PUC Minas</dd>
-        </div>
-      </dl>
+      <a href="#case" className="hero__next container" onClick={(e) => {
+        e.preventDefault()
+        document.getElementById('case')?.scrollIntoView({ behavior: 'smooth' })
+      }}>
+        Vem conhecer meu trabalho! <IconArrow size={16} />
+      </a>
     </section>
   )
 }

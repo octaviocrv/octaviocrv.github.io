@@ -1,19 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { asset } from '../utils/asset'
 import { links } from '../data/profile'
-import { IconArrowUpRight } from './Icons'
+import { IconArrowUpRight, IconWhatsApp } from './Icons'
 
-export const SECTIONS = [
-  { id: 'inicio', label: 'Início', route: '/' },
-  { id: 'case', label: 'Case', route: '/case' },
-  { id: 'projetos', label: 'Projetos', route: '/projetos' },
-  { id: 'stack', label: 'Stack', route: '/stack' },
-  { id: 'sobre', label: 'Sobre', route: '/sobre' },
-  { id: 'contato', label: 'Contato', route: '/contato' },
+const NAV = [
+  { id: 'case', label: 'Case' },
+  { id: 'sobre', label: 'Sobre' },
+  { id: 'projetos', label: 'Projetos' },
+  { id: 'stack', label: 'Stack' },
 ]
-
-const NAV = SECTIONS.filter((s) => ['case', 'projetos', 'stack', 'sobre'].includes(s.id))
 
 /** Link para uma seção da home que funciona a partir de qualquer página. */
 export function SectionLink({ id, children, onNavigate, ...rest }) {
@@ -40,24 +36,9 @@ export function SectionLink({ id, children, onNavigate, ...rest }) {
   )
 }
 
-function useBhClock() {
-  const [now, setNow] = useState(() => new Date())
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(t)
-  }, [])
-  return new Intl.DateTimeFormat('pt-BR', {
-    timeZone: 'America/Sao_Paulo',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false,
-  }).format(now)
-}
-
 /** Observa as seções [data-section] da página atual e devolve a ativa. */
 function useActiveSection(pathname) {
-  const [active, setActive] = useState('inicio')
+  const [active, setActive] = useState(null)
   useEffect(() => {
     let io
     const raf = requestAnimationFrame(() => {
@@ -72,7 +53,7 @@ function useActiveSection(pathname) {
             if (e.isIntersecting) setActive(e.target.dataset.section)
           })
         },
-        { rootMargin: '-48% 0px -48% 0px' }
+        { rootMargin: '-45% 0px -50% 0px' }
       )
       els.forEach((el) => io.observe(el))
     })
@@ -84,70 +65,21 @@ function useActiveSection(pathname) {
   return active
 }
 
-function RouteLog({ route }) {
-  const [text, setText] = useState(route)
-  useEffect(() => {
-    if (!route) return undefined
-    let i = 0
-    setText('')
-    const t = setInterval(() => {
-      i += 1
-      setText(route.slice(0, i))
-      if (i >= route.length) clearInterval(t)
-    }, 28)
-    return () => clearInterval(t)
-  }, [route])
-  return (
-    <span className="hud__log" aria-hidden="true">
-      <span className="hud__log-verb">GET</span> {text}
-      <span className="hud__log-ok">200</span>
-    </span>
-  )
-}
-
-export default function Hud() {
+export default function Header() {
   const { pathname } = useLocation()
-  const active = useActiveSection(pathname)
-  const time = useBhClock()
-  const [hidden, setHidden] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [quiet, setQuiet] = useState(true)
-  const [scrolled, setScrolled] = useState(false)
-  const lastY = useRef(0)
-  const menuBtn = useRef(null)
-
   const isHome = pathname === '/'
-  const activeIdx = SECTIONS.findIndex((s) => s.id === active)
-  const current = SECTIONS[activeIdx]
-  const route = isHome ? current?.route ?? '/' : pathname
-  const light = isHome && active === 'sobre'
+  const active = useActiveSection(pathname)
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuBtn = useRef(null)
+  const onDark = isHome && active === 'contato'
 
   useEffect(() => {
-    let raf = 0
-    const onScroll = () => {
-      if (raf) return
-      raf = requestAnimationFrame(() => {
-        raf = 0
-        const y = window.scrollY
-        const max = document.documentElement.scrollHeight - window.innerHeight
-        setProgress(max > 0 ? y / max : 0)
-        setQuiet(y < window.innerHeight * 0.55)
-        setScrolled(y > 8)
-        if (y < 160) setHidden(false)
-        else if (y > lastY.current + 4) setHidden(true)
-        else if (y < lastY.current - 4) setHidden(false)
-        lastY.current = y
-      })
-    }
+    const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  useEffect(() => {
-    document.documentElement.dataset.surface = light ? 'light' : 'dark'
-  }, [light])
 
   useEffect(() => {
     if (!menuOpen) return undefined
@@ -163,23 +95,27 @@ export default function Hud() {
 
   useEffect(() => setMenuOpen(false), [pathname])
 
+  const cls = ['site-header', scrolled && 'is-scrolled', onDark && 'is-dark', menuOpen && 'is-menu']
+    .filter(Boolean)
+    .join(' ')
+
   return (
-    <>
-      <header className={`hud-top${scrolled ? ' is-scrolled' : ''}${hidden && !menuOpen ? ' is-hidden' : ''}${menuOpen ? ' is-menu' : ''}`}>
-        <SectionLink id="inicio" className="brand" aria-label="Octávio Augusto — início">
-          <img src={asset('/assets/img/avatar.webp')} alt="" className="brand__avatar" width="34" height="34" />
-          <span className="brand__name">
-            Octávio Augusto
-            <span className="brand__role">Full Stack · BH</span>
-          </span>
+    <header className={cls}>
+      <div className="site-header__inner container">
+        <SectionLink id="inicio" className="brand" aria-label="Octávio Augusto, início">
+          <img src={asset('/assets/img/me/avatar.webp')} alt="" className="brand__avatar" width="44" height="44" />
+          <span className="brand__name">Octávio Augusto</span>
         </SectionLink>
 
-        <nav className="hud-nav" aria-label="Seções">
+        <nav className="site-nav" aria-label="Seções">
           <ul>
             {NAV.map((s) => (
               <li key={s.id}>
-                <SectionLink id={s.id} className={`hud-nav__link${isHome && active === s.id ? ' is-active' : ''}`}>
-                  <span className="hud-nav__idx">{String(SECTIONS.indexOf(s)).padStart(2, '0')}</span>
+                <SectionLink
+                  id={s.id}
+                  className="site-nav__link"
+                  aria-current={isHome && active === s.id ? 'true' : undefined}
+                >
                   {s.label}
                 </SectionLink>
               </li>
@@ -187,93 +123,49 @@ export default function Hud() {
           </ul>
         </nav>
 
-        <SectionLink id="contato" className="hud-cta">
-          <span className="live-dot" aria-hidden="true" />
-          Bora conversar
-        </SectionLink>
+        <div className="site-header__actions">
+          <a href={links.whatsapp} target="_blank" rel="noreferrer" className="btn btn--primary btn--small">
+            <IconWhatsApp size={16} /> Conversar sobre oportunidades
+          </a>
+          <button
+            ref={menuBtn}
+            type="button"
+            className="burger"
+            aria-expanded={menuOpen}
+            aria-controls="menu-sheet"
+            aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+            onClick={() => setMenuOpen((o) => !o)}
+          >
+            <span />
+            <span />
+          </button>
+        </div>
+      </div>
 
-        <button
-          ref={menuBtn}
-          type="button"
-          className="hud-burger"
-          aria-expanded={menuOpen}
-          aria-controls="menu-overlay"
-          aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
-          onClick={() => setMenuOpen((o) => !o)}
-        >
-          <span />
-          <span />
-        </button>
-      </header>
-
-      <div
-        id="menu-overlay"
-        className={`menu${menuOpen ? ' is-open' : ''}`}
-        aria-hidden={!menuOpen}
-        inert={menuOpen ? undefined : ''}
-      >
-        <nav aria-label="Menu">
-          <ol className="menu__list">
-            {SECTIONS.map((s, i) => (
+      <div id="menu-sheet" className={`menu-sheet${menuOpen ? ' is-open' : ''}`} inert={menuOpen ? undefined : ''}>
+        <nav aria-label="Menu" className="container">
+          <ul className="menu-sheet__list">
+            {[{ id: 'inicio', label: 'Início' }, ...NAV, { id: 'contato', label: 'Contato' }].map((s, i) => (
               <li key={s.id} style={{ '--i': i }}>
-                <SectionLink id={s.id} className="menu__link" onNavigate={() => setMenuOpen(false)}>
-                  <span className="menu__idx">{String(i).padStart(2, '0')}</span>
+                <SectionLink id={s.id} className="menu-sheet__link" onNavigate={() => setMenuOpen(false)}>
                   {s.label}
                 </SectionLink>
               </li>
             ))}
-          </ol>
+          </ul>
+          <div className="menu-sheet__foot">
+            <a href={links.linkedin} target="_blank" rel="noreferrer">
+              LinkedIn <IconArrowUpRight size={14} />
+            </a>
+            <a href={links.github} target="_blank" rel="noreferrer">
+              GitHub <IconArrowUpRight size={14} />
+            </a>
+            <a href={links.instagram} target="_blank" rel="noreferrer">
+              Instagram <IconArrowUpRight size={14} />
+            </a>
+          </div>
         </nav>
-        <div className="menu__foot">
-          <a href={links.whatsapp} target="_blank" rel="noreferrer">WhatsApp <IconArrowUpRight size={14} /></a>
-          <a href={links.linkedin} target="_blank" rel="noreferrer">LinkedIn <IconArrowUpRight size={14} /></a>
-          <a href={links.github} target="_blank" rel="noreferrer">GitHub <IconArrowUpRight size={14} /></a>
-        </div>
       </div>
-
-      {/* Barramento: trilha de circuito que acompanha o scroll e serve de navegação */}
-      {isHome && (
-        <nav className="bus" aria-label="Progresso da página" style={{ '--prog': progress }}>
-          <span className="bus__rail" aria-hidden="true">
-            <span className="bus__fill" />
-            <span className="bus__packet" />
-          </span>
-          <ol>
-            {SECTIONS.map((s, i) => (
-              <li key={s.id} style={{ '--at': i / (SECTIONS.length - 1) }}>
-                <SectionLink
-                  id={s.id}
-                  className={`bus__node${i <= activeIdx ? ' is-passed' : ''}${i === activeIdx ? ' is-active' : ''}`}
-                  aria-current={i === activeIdx ? 'true' : undefined}
-                >
-                  <span className="bus__label">
-                    {String(i).padStart(2, '0')} {s.label}
-                  </span>
-                </SectionLink>
-              </li>
-            ))}
-          </ol>
-        </nav>
-      )}
-
-      <span className="topbar" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
-
-      <div className={`hud-bottom${quiet && isHome ? ' is-quiet' : ''}`} aria-hidden="true">
-        <span className="hud__geo">
-          Belo Horizonte, MG · 19°55′S 43°56′O
-          <span className="hud__time">
-            <b>{time}</b> BRT
-          </span>
-        </span>
-        <span className="hud__route">
-          <RouteLog route={route} />
-          {isHome && current && (
-            <span className="hud__count">
-              <b>{String(activeIdx).padStart(2, '0')}</b> / {String(SECTIONS.length - 1).padStart(2, '0')}
-            </span>
-          )}
-        </span>
-      </div>
-    </>
+    </header>
   )
 }

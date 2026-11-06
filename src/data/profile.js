@@ -11,29 +11,35 @@ export const links = {
 }
 
 export const portraits = [
-  { src: asset('/assets/img/octavio-bracos.webp'), alt: 'Octávio Augusto de braços cruzados' },
-  { src: asset('/assets/img/octavio-sorrindo.webp'), alt: 'Octávio Augusto sorrindo' },
-  { src: asset('/assets/img/octavio-serio.webp'), alt: 'Octávio Augusto, retrato frontal' },
+  { src: asset('/assets/img/me/about.webp'), alt: 'Octávio Augusto trabalhando no notebook, de braços cruzados, em um escritório claro com plantas' },
 ]
 
 export const education = [
-  { title: 'Bacharelado em Sistemas de Informação', place: 'PUC Minas' },
-  { title: 'Técnico em Desenvolvimento de Sistemas', place: 'SENAI BH · CECOTEG' },
+  { label: 'Graduação', title: 'Sistemas de Informação', place: 'PUC Minas · Em andamento' },
+  { label: 'Formação técnica', title: 'Técnico em Desenvolvimento de Sistemas', place: 'SENAI BH · CECOTEG' },
 ]
 
 export const principles = [
   {
-    title: 'Contexto antes do código',
-    text: 'Busco compreender o contexto e identificar o que realmente precisa ser resolvido antes de escolher a ferramenta.',
+    title: 'Entender antes de construir',
+    text: 'Antes de pensar na solução, procuro entender o problema, quem está envolvido e o que realmente precisa ser resolvido.',
   },
   {
-    title: 'Da concepção à produção',
-    text: 'Desenvolvo projetos desde a ideia até a implementação — interface, integrações, infraestrutura e entrega.',
+    title: 'Da ideia à realidade',
+    text: 'Gosto de acompanhar o processo por inteiro, das primeiras conversas aos ajustes finais, até ver tudo funcionando de verdade.',
   },
   {
-    title: 'Negócio, pessoa e tecnologia',
-    text: 'Uno visão de negócio, experiência do usuário e tecnologia para construir soluções que façam sentido na prática.',
+    title: 'Feito para pessoas',
+    text: 'Por trás de cada projeto existe alguém que vai utilizá-lo. Por isso, acredito que uma boa solução precisa fazer sentido para quem está do outro lado.',
   },
+]
+
+/* Fora do código: vida pessoal, para a seção de trajetória */
+export const outside = [
+  { title: 'Corrida', text: 'Já corri 15 km e pretendo fazer uma meia maratona em 2027.' },
+  { title: 'Sonhos', text: 'Ter a casa própria e viajar para a Europa.' },
+  { title: 'Curiosidade', text: 'Gosto de psicologia e de filosofia humana.' },
+  { title: 'Gente', text: 'Sempre que possível, estou com amigos e família.' },
 ]
 
 /* Stack agrupada. `match` lista os nomes usados em projects.tools — a contagem é derivada dos dados reais. */
@@ -55,6 +61,8 @@ export const stackGroups = [
     id: 'backend',
     label: 'Back-end & Dados',
     items: [
+      { name: 'C#', match: ['C#'], sameLevelAs: 'React' },
+      { name: 'C', match: ['C'], sameLevelAs: 'React' },
       { name: 'Node.js', match: ['Node.js'] },
       { name: 'Python', match: ['Python'] },
       { name: 'REST API', match: ['REST API', 'Fetch API'] },

@@ -42,13 +42,9 @@ export default function ProjectDetail({ project }) {
   return (
     <main id="conteudo" className="detail">
       <header className="detail__hero">
-        <SectionLink id="projetos" className="detail__back mono">
-          <IconArrowLeft size={14} /> Índice de trabalhos
+        <SectionLink id="projetos" className="detail__back">
+          <IconArrowLeft size={16} /> Todos os trabalhos
         </SectionLink>
-
-        <p className="eyebrow">
-          Projeto {String(idx + 1).padStart(2, '0')} / {String(projectsData.length).padStart(2, '0')} · {kinds[project.kind]}
-        </p>
         <h1 className="detail__title" style={{ viewTransitionName: `project-title-${project.id}` }}>
           {project.name}
         </h1>
@@ -58,22 +54,22 @@ export default function ProjectDetail({ project }) {
         <dl className="detail__meta">
           {project.client && (
             <div>
-              <dt className="mono">Cliente</dt>
+              <dt>Cliente</dt>
               <dd>{project.client}</dd>
             </div>
           )}
           <div>
-            <dt className="mono">Status</dt>
+            <dt>Status</dt>
             <dd>
               <span className={`status status--${st.key}`}>{st.label}</span>
             </dd>
           </div>
           <div>
-            <dt className="mono">Categoria</dt>
+            <dt>Categoria</dt>
             <dd>{kinds[project.kind]}</dd>
           </div>
           <div>
-            <dt className="mono">Código</dt>
+            <dt>Código</dt>
             <dd>{real(project.codeLink) ? 'Aberto no GitHub' : project.isPrivate ? 'Privado (NDA)' : '—'}</dd>
           </div>
         </dl>
@@ -81,26 +77,26 @@ export default function ProjectDetail({ project }) {
         {(real(project.liveLink) || real(project.codeLink)) && (
           <div className="detail__actions">
             {real(project.liveLink) && (
-              <a href={project.liveLink} target="_blank" rel="noreferrer" className="btn btn--solid">
-                Acessar aplicação <IconArrowUpRight />
+              <a href={project.liveLink} target="_blank" rel="noreferrer" className="btn btn--primary">
+                Abrir projeto no ar <IconArrowUpRight />
               </a>
             )}
             {real(project.codeLink) && (
-              <a href={project.codeLink} target="_blank" rel="noreferrer" className="btn btn--ghost">
-                Ver código-fonte <IconArrowUpRight />
+              <a href={project.codeLink} target="_blank" rel="noreferrer" className="btn btn--secondary">
+                Ver código no GitHub <IconArrowUpRight />
               </a>
             )}
           </div>
         )}
       </header>
 
-      <figure className="detail__cover brackets">
-        <img src={project.cover} alt={`Imagem do projeto ${project.name}`} style={{ viewTransitionName: 'project-cover' }} />
+      <figure className="detail__cover">
+        <img src={project.cover} alt={`Tela do projeto ${project.name}`} style={{ viewTransitionName: 'project-cover' }} />
       </figure>
 
       <div className="detail__body">
         <section className="detail__block" data-reveal aria-labelledby="ov">
-          <h2 id="ov" className="detail__label mono">Visão geral</h2>
+          <h2 id="ov" className="detail__label">O projeto</h2>
           <div className="detail__prose">
             <p className="detail__prose-lead">{lead}</p>
             {rest.map((para) => (
@@ -111,12 +107,11 @@ export default function ProjectDetail({ project }) {
 
         {project.challenges?.length > 0 && (
           <section className="detail__block" aria-labelledby="ch">
-            <h2 id="ch" className="detail__label mono" data-reveal>Desafios & soluções</h2>
+            <h2 id="ch" className="detail__label" data-reveal>Problemas e soluções</h2>
             <ol className="challenges">
               {project.challenges.map((c, i) => (
                 <li key={c.title} data-reveal>
-                  <span className="mono challenges__n">0{i + 1}</span>
-                  <h3>{c.title}</h3>
+                                    <h3>{c.title}</h3>
                   <p>{c.solution}</p>
                 </li>
               ))}
@@ -126,7 +121,7 @@ export default function ProjectDetail({ project }) {
 
         {project.results?.length > 0 && (
           <section className="detail__block" aria-labelledby="rs">
-            <h2 id="rs" className="detail__label mono" data-reveal>Resultados</h2>
+            <h2 id="rs" className="detail__label" data-reveal>Resultados</h2>
             <ul className="v-result v-result--page" style={{ '--lp': 1 }}>
               {project.results.map((r, k) => (
                 <li key={r.metric} style={{ '--k': k }} data-reveal>
@@ -140,7 +135,7 @@ export default function ProjectDetail({ project }) {
         )}
 
         <section className="detail__block" data-reveal aria-labelledby="tl">
-          <h2 id="tl" className="detail__label mono">Ferramentas</h2>
+          <h2 id="tl" className="detail__label">Ferramentas</h2>
           <ul className="tools">
             {project.tools.map((t) => (
               <li key={t}>{t}</li>
@@ -157,7 +152,7 @@ export default function ProjectDetail({ project }) {
       </div>
 
       <Link to={`/project-${next.id}`} onClick={goNext} className="next">
-        <span className="mono next__label">Próximo projeto · {String(projectIndex(next) + 1).padStart(2, '0')}</span>
+        <span className="next__label">Próximo projeto</span>
         <span className="next__name" style={{ viewTransitionName: `project-title-${next.id}` }}>
           {next.name}
         </span>

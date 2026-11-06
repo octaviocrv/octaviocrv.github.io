@@ -4,12 +4,13 @@ import CaseStory from '../sections/CaseStory'
 import ProjectIndex from '../sections/ProjectIndex'
 import Stack from '../sections/Stack'
 import About from '../sections/About'
+import Journey from '../sections/Journey'
 import Contact from '../sections/Contact'
 import Footer from '../sections/Footer'
 import { useRevealAll } from '../hooks/motion'
 
 export default function Home() {
-  // filtro compartilhado: o grafo do hero e a seção Stack alimentam o índice de projetos
+  // filtro compartilhado: a seção Stack alimenta o índice de projetos
   const [filter, setFilter] = useState({ type: 'all', value: null })
   useRevealAll()
 
@@ -22,11 +23,12 @@ export default function Home() {
 
   return (
     <main id="conteudo">
-      <Hero onPickTech={pickTech} />
+      <Hero />
       <CaseStory />
+      <About />
+      <Journey />
       <ProjectIndex filter={filter} setFilter={setFilter} />
       <Stack activeTech={filter.type === 'tech' ? filter.value : null} onPick={pickTech} />
-      <About />
       <Contact />
       <Footer />
     </main>

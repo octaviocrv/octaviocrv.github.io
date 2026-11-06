@@ -1,13 +1,7 @@
 import { useState } from 'react'
 import { CONTACT_EMAIL, links } from '../data/profile'
-import { IconArrowUpRight, IconCheck, IconCopy } from '../components/Icons'
-
-const CHANNELS = [
-  { label: 'WhatsApp', hint: 'Papo rápido e direto', href: links.whatsapp },
-  { label: 'LinkedIn', hint: 'Trajetória e conexões', href: links.linkedin },
-  { label: 'GitHub', hint: 'Código aberto', href: links.github },
-  { label: 'Instagram', hint: '@octaviocrv', href: links.instagram },
-]
+import { asset } from '../utils/asset'
+import { IconArrow, IconArrowUpRight, IconCheck, IconCopy, IconLinkedIn, IconWhatsApp } from '../components/Icons'
 
 export default function Contact() {
   const [copied, setCopied] = useState(false)
@@ -24,51 +18,52 @@ export default function Contact() {
 
   return (
     <section id="contato" data-section="contato" className="contact" aria-labelledby="contact-title">
-      <p className="eyebrow" data-reveal>05 — Contato</p>
-      <h2 id="contact-title" className="contact__title" data-reveal>
-        Bora <em>conversar?</em>
-      </h2>
-      <p className="contact__lede" data-reveal>
-        Seja para discutir arquitetura front-end, uma integração, uma automação com IA ou uma nova
-        oportunidade — escolha o canal.
-      </p>
+      <div className="contact__grid container">
+        <div className="contact__body">
+          <h2 id="contact-title" className="contact__title" data-reveal>
+            Vamos conversar?
+          </h2>
+          <p className="contact__lede" data-reveal>
+            Tem uma vaga ou um sistema para construir? Me chama: respondo em até 24 horas.
+          </p>
 
-      <div className="contact__grid">
-        <div className="terminal" data-reveal>
-          <div className="terminal__bar mono" aria-hidden="true">
-            <span className="terminal__dots"><i /><i /><i /></span>
-            octavio@bh: ~
-          </div>
-          <div className="terminal__body mono">
-            <p><span className="terminal__prompt">$</span> ping octavio</p>
-            <p className="terminal__out">
-              <span className="live-dot" aria-hidden="true" /> online · disponível para novos projetos
-            </p>
-            <p className="terminal__out">resposta em até 24h · Belo Horizonte, MG</p>
-          </div>
-          <div className="terminal__mail">
-            <a href={`mailto:${CONTACT_EMAIL}`} className="terminal__email">
-              {CONTACT_EMAIL}
+          <div className="doors">
+            <a href={links.whatsapp} target="_blank" rel="noreferrer" className="door door--primary" data-reveal>
+              <IconWhatsApp size={22} />
+              <span className="door__body">
+                <span className="door__title">Conversar sobre oportunidades</span>
+                <span className="door__hint">Direto no WhatsApp</span>
+              </span>
+              <IconArrow className="door__go" size={20} />
             </a>
-            <button type="button" className={`btn btn--small${copied ? ' is-done' : ''}`} onClick={copy}>
-              {copied ? <IconCheck /> : <IconCopy />}
-              <span aria-live="polite">{copied ? 'Copiado' : 'Copiar e-mail'}</span>
+            <a href={links.linkedin} target="_blank" rel="noreferrer" className="door" data-reveal style={{ '--d': '80ms' }}>
+              <IconLinkedIn size={22} />
+              <span className="door__body">
+                <span className="door__title">Ver minha trajetória</span>
+                <span className="door__hint">Experiência e formação no LinkedIn</span>
+              </span>
+              <IconArrowUpRight className="door__go" size={20} />
+            </a>
+          </div>
+
+          <div className="contact__mail" data-reveal>
+            <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+            <button type="button" className={`copy${copied ? ' is-done' : ''}`} onClick={copy}>
+              {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
+              <span aria-live="polite">{copied ? 'Copiado' : 'Copiar'}</span>
             </button>
           </div>
         </div>
 
-        <ul className="channels">
-          {CHANNELS.map((c, i) => (
-            <li key={c.label} data-reveal style={{ '--d': `${i * 70}ms` }}>
-              <a href={c.href} target="_blank" rel="noreferrer" className="channel">
-                <span className="channel__n mono">0{i + 1}</span>
-                <span className="channel__label">{c.label}</span>
-                <span className="channel__hint">{c.hint}</span>
-                <IconArrowUpRight className="channel__icon" size={24} strokeWidth={1.5} />
-              </a>
-            </li>
-          ))}
-        </ul>
+        <figure className="contact__photo" data-reveal>
+          <img
+            src={asset('/assets/img/me/smile.webp')}
+            alt="Octávio Augusto sorrindo no escritório, com um quadro de montanhas ao fundo"
+            loading="lazy"
+            width="800"
+            height="1066"
+          />
+        </figure>
       </div>
     </section>
   )
