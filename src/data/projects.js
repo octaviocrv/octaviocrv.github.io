@@ -3,6 +3,42 @@ const asset = (path) => `${baseUrl}${path.replace(/^\//, '')}`
 
 export const projectsData = [
   {
+    id: 17,
+    name: 'LeadFinder',
+    kind: 'produto',
+    cover: asset('/assets/img/projects/p17.webp'),
+    thumb: asset('/assets/img/projects/p17-sm.webp'),
+    image: asset('/assets/img/projects/p17.webp'),
+    coverAlt: 'Tela de login do LeadFinder, com apresentação da busca de negócios locais e formulário de acesso.',
+    title: 'LeadFinder — Prospecção de negócios locais',
+    shortDesc: 'Encontra negócios locais sem site ou redes sociais para ajudar na prospecção comercial.',
+    heroDesc: 'Ferramenta de prospecção para quem vende para negócios locais: ajuda a encontrar empresas da região que ainda não têm presença online e escolher com quem falar primeiro.',
+    overview: [
+      'O LeadFinder percorre o mapa da cidade para identificar negócios sem site ou redes sociais, aproximando a busca por clientes da realidade de cada região.',
+      'A tela de entrada apresenta a proposta do produto e reúne o acesso ao painel de busca por usuário e senha.',
+    ],
+    tools: ['Prospecção Comercial', 'Vercel'],
+    liveLink: 'https://leadfinder-orcin.vercel.app/login',
+  },
+  {
+    id: 18,
+    name: 'GarimpoAuto',
+    kind: 'produto',
+    cover: asset('/assets/img/projects/p18.webp'),
+    thumb: asset('/assets/img/projects/p18-sm.webp'),
+    image: asset('/assets/img/projects/p18.webp'),
+    coverAlt: 'Han, mascote do GarimpoAuto, sorrindo e segurando um celular.',
+    title: 'GarimpoAuto — Busca de carros usados',
+    shortDesc: 'Reúne anúncios de carros usados para ajudar revendedores a encontrar oportunidades de negócio.',
+    heroDesc: 'Projeto para centralizar a busca por carros usados e organizar os dados dos anúncios, facilitando a descoberta de oportunidades para revendedores.',
+    overview: [
+      'O GarimpoAuto reúne anúncios de carros usados em um só lugar, com dados organizados para apoiar a pesquisa de bons negócios.',
+      'O projeto inclui uma aplicação web em React e TypeScript, uma API e um módulo de coleta de anúncios. A identidade visual tem Han como mascote.',
+    ],
+    tools: ['React', 'TypeScript', 'Vite', 'Tailwind CSS', 'Docker', 'Git', 'GitHub'],
+    codeLink: 'https://github.com/octaviocrv/garimpoauto',
+  },
+  {
     id: 12,
     name: 'Scooter Belo Horizonte',
     kind: 'web',

@@ -91,7 +91,7 @@ export default function ProjectDetail({ project }) {
       </header>
 
       <figure className="detail__cover">
-        <img src={project.cover} alt={`Tela do projeto ${project.name}`} style={{ viewTransitionName: 'project-cover' }} />
+        <img src={project.cover} alt={project.coverAlt || `Tela do projeto ${project.name}`} style={{ viewTransitionName: 'project-cover' }} />
       </figure>
 
       <div className="detail__body">
