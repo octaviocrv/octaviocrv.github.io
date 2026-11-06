@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import { useSwipe } from '../hooks/useSwipe'
 import { Link, useNavigate } from 'react-router-dom'
 import { projectsData } from '../data/projects'
 import { useMediaQuery, useReducedMotion, useScrollProgress, withViewTransition } from '../hooks/motion'
-import { IconArrow } from '../components/Icons'
+import { IconArrow, IconArrowLeft } from '../components/Icons'
 import { hl } from '../components/Hl'
 import { asset } from '../utils/asset'
 
@@ -108,32 +109,78 @@ function ArchBlock() {
   )
 }
 
-function KioskVisual({ active }) {
+function KioskVisual({ active, mobile = false }) {
   const ref = useRef(null)
+  const dialogRef = useRef(null)
+  const expandedRef = useRef(null)
+  const [expanded, setExpanded] = useState(false)
   const reduced = useReducedMotion()
 
-  // toca só quando a etapa está visível; com movimento reduzido, fica parado com controles
   useEffect(() => {
     const v = ref.current
-    if (!v || reduced) return
-    if (active) v.play().catch(() => {})
+    if (!v) return
+    if (active && !expanded && !reduced) v.play().catch(() => {})
     else v.pause()
-  }, [active, reduced])
+  }, [active, reduced, expanded])
+
+  useEffect(() => {
+    if (!expanded) return undefined
+    const dialog = dialogRef.current
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    dialog.showModal()
+    const video = expandedRef.current
+    video.currentTime = ref.current?.currentTime || 0
+    video.play().catch(() => {})
+    return () => {
+      video.pause()
+      dialog.close()
+      document.body.style.overflow = previousOverflow
+    }
+  }, [expanded])
+
+  useEffect(() => {
+    if (!active) setExpanded(false)
+  }, [active])
+
+  if (!mobile) {
+    return (
+      <figure className="v-video">
+        <video
+          ref={ref}
+          src={asset('/assets/video/portal-leitura.mp4')}
+          poster={asset('/assets/video/portal-leitura-poster.webp')}
+          muted loop playsInline preload="metadata"
+          controls={reduced}
+          aria-label="Demonstração do terminal de autoatendimento da Livraria Leitura"
+        />
+      </figure>
+    )
+  }
 
   return (
-    <figure className="v-video">
-      <video
-        ref={ref}
-        src={asset('/assets/video/portal-leitura.mp4')}
-        poster={asset('/assets/video/portal-leitura-poster.webp')}
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        controls={reduced}
-        aria-label="Demonstração do terminal de autoatendimento da Livraria Leitura"
-      />
-    </figure>
+    <>
+      <figure className="v-video">
+        <button type="button" className="v-video__open" onClick={() => setExpanded(true)} aria-label="Ampliar demonstração do self-checkout">
+          <video
+            ref={ref}
+            src={asset('/assets/video/portal-leitura.mp4')}
+            poster={asset('/assets/video/portal-leitura-poster.webp')}
+            muted loop playsInline preload="metadata"
+            aria-label="Demonstração do terminal de autoatendimento da Livraria Leitura"
+          />
+          <span className="v-video__invite"><span aria-hidden="true">▶</span> Veja o checkout em ação <small>{mobile ? 'Toque para ampliar na horizontal' : 'Clique para ampliar o vídeo'}</small></span>
+        </button>
+      </figure>
+      <dialog ref={dialogRef} className="kiosk-player" aria-label="Demonstração ampliada do self-checkout"
+        onClose={() => setExpanded(false)} onClick={(e) => { if (e.target === e.currentTarget) setExpanded(false) }}>
+        <button type="button" className="kiosk-player__close" aria-label="Fechar vídeo" onClick={() => setExpanded(false)}>×</button>
+        {expanded && <div className="kiosk-player__screen">
+          <video ref={expandedRef} src={asset('/assets/video/portal-leitura.mp4')} controls playsInline muted />
+          <p>Mais espaço para cada detalhe. Gire o celular para assistir com conforto.</p>
+        </div>}
+      </dialog>
+    </>
   )
 }
 
@@ -158,8 +205,23 @@ export default function CaseStory() {
   const [step, setStep] = useState(0)
   const reduced = useReducedMotion()
   const wide = useMediaQuery('(min-width: 960px)')
+  const mobile = useMediaQuery('(max-width: 600px)')
+  const [mobileStep, setMobileStep] = useState(0)
+  const [inView, setInView] = useState(false)
+  const mobileRef = useRef(null)
   const pinned = wide && !reduced
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const el = mobileRef.current
+    if (!mobile || !el) return undefined
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.25 })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [mobile])
+
+  const changeMobileStep = (direction) => setMobileStep((i) => (i + direction + STEPS.length) % STEPS.length)
+  const swipe = useSwipe((direction) => { if (mobile) changeMobileStep(direction) })
 
   useScrollProgress(ref, { steps: STEPS.length, onStep: setStep, enabled: pinned })
 
@@ -184,20 +246,34 @@ export default function CaseStory() {
 
   if (!pinned) {
     return (
-      <section id="case" data-section="case" className="case case--flow" aria-labelledby="case-title">
+      <section ref={mobileRef} id="case" data-section="case" className={`case case--flow${mobile ? ' case--carousel' : ''}`} aria-labelledby="case-title">
         <header className="case__head section-head" data-reveal>
           <h2 id="case-title" className="h2">Self-checkout na {project.client}</h2>
           <p className="lede"><strong>Meu case de sucesso.</strong> Um sistema em produção, do problema ao resultado medido.</p>
         </header>
-        <ol className="case__flow">
+        {mobile && (
+          <div className="case__carousel-controls">
+            <button type="button" aria-label="Etapa anterior" onClick={() => changeMobileStep(-1)}><IconArrowLeft /></button>
+            <div className="case__dots" aria-label="Etapas do self-checkout">
+              {STEPS.map((item, i) => (
+                <button key={item.key} type="button" className={`case__dot${i === mobileStep ? ' is-active' : ''}`}
+                  aria-label={item.tag} aria-current={i === mobileStep ? 'step' : undefined}
+                  onClick={() => setMobileStep(i)} />
+              ))}
+            </div>
+            <button type="button" aria-label="Próxima etapa" onClick={() => changeMobileStep(1)}><IconArrow /></button>
+          </div>
+        )}
+        <p className="carousel-hint">Arraste para o lado para ver mais</p>
+        <ol className="case__flow" {...swipe}>
           {STEPS.map((s, i) => {
             const Visual = VISUALS[i]
             return (
-              <li key={s.key} className="case__flow-step" data-reveal>
+              <li key={s.key} className={`case__flow-step${mobile ? ' is-in' : ''}`} hidden={mobile && i !== mobileStep} data-reveal>
                 <h3 className="h3">{hl(s.title)}</h3>
                 <p className="case__text">{s.text}</p>
                 <div className="stage stage--static">
-                  <div className="stage__layer is-active" style={{ '--lp': 1 }}><Visual active /></div>
+                  <div className="stage__layer is-active" style={{ '--lp': 1 }}><Visual active={!mobile || (i === mobileStep && inView)} mobile={mobile} /></div>
                 </div>
               </li>
             )

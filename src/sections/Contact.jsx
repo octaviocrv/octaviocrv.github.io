@@ -24,7 +24,7 @@ export default function Contact() {
             Vamos conversar?
           </h2>
           <p className="contact__lede" data-reveal>
-            Tem uma vaga ou um sistema para construir? Me chama: respondo em até 24 horas.
+            Acredito que boas oportunidades começam com uma conversa. Se quiser trocar uma ideia, estou à disposição.
           </p>
 
           <div className="doors">

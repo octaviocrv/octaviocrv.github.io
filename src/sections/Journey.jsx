@@ -1,9 +1,18 @@
+import { useEffect, useRef, useState } from 'react'
+import { useMediaQuery } from '../hooks/motion'
 import { outside } from '../data/profile'
 import { asset } from '../utils/asset'
 
 const COLORS = ['var(--c-interface)', 'var(--c-infra)', 'var(--c-ia)', 'var(--c-backend)']
 
-const photo = (file, w, h, alt) => ({ src: asset(`/assets/img/me/${file}.webp`), w, h, alt })
+const photo = (file, w, h, alt, extension = 'webp', zoom = 1, objectPosition = 'center') => ({
+  src: asset(`/assets/img/me/${file}.${extension}`),
+  w,
+  h,
+  alt,
+  zoom,
+  objectPosition,
+})
 
 const STEPS = [
   {
@@ -79,29 +88,62 @@ const STEPS = [
   {
     title: 'Nérus: minha primeira oportunidade como desenvolvedor',
     text: [
-      'Depois de passar pela área de suporte, eu já estava em uma posição de analista. Mesmo assim, decidi deixá-la e aceitar ganhar menos para entrar na área de desenvolvimento como estagiário. Eu queria aprender e viver o dia a dia de um dev de verdade, trabalhando diretamente com o que vinha estudando há tanto tempo: desenvolvimento de software.',
-      'Na Nérus, comecei como estagiário no ERP da empresa, conhecendo de perto os desafios de manter e evoluir um sistema utilizado diariamente por outras pessoas. Aos poucos, fui ganhando experiência, assumindo novas responsabilidades e participando de projetos cada vez mais complexos, até evoluir para desenvolvedor júnior.',
-      'Continuo na Nérus e sigo aprendendo. É uma fase importante da minha trajetória, em que deixei de apenas estudar programação e passei a entender o que realmente significa desenvolver, trabalhar em equipe e colocar soluções em produção.',
+      'Mesmo já sendo analista de suporte, aceitei ganhar menos para começar como estagiário de desenvolvimento na Nérus. Queria colocar em prática o que estudava e viver o dia a dia de um desenvolvedor.',
+      'Comecei no ERP da empresa e evoluí para desenvolvedor júnior, assumindo projetos como o self-checkout da Livraria Leitura: interface em React, integração com o time C e APIs fiscais, com serviços em Docker e Nginx.',
+      'Continuo na Nérus, aprendendo a manter sistemas em produção, trabalhar em equipe e transformar necessidades reais em software.',
+    ],
+    photos: [
+      photo('nerus', 828, 1472, 'Octávio em uma videochamada durante o trabalho na Nérus', 'jpg', 1.35, 'right center'),
+      { ...photo('nerus-3', 1124, 1600, 'Octávio usando uma camiseta da Nérus', 'jpeg'), objectFit: 'contain' },
     ],
   },
   {
     title: 'Explorando novos caminhos: Marketing e automações',
     text: [
-      'Minha curiosidade por tecnologia também me levou a explorar o universo do marketing e das automações. Tive a oportunidade de trabalhar com inteligência artificial, chatbots, integrações entre sistemas e automação de processos, conhecendo uma realidade diferente do desenvolvimento tradicional.',
-      'Essa experiência ampliou minha visão sobre como a tecnologia pode ajudar negócios de diferentes áreas. Mais do que aprender novas ferramentas, passei a entender melhor os processos por trás de cada projeto e como conectar tecnologia às necessidades reais das empresas.',
+      'Na Planads, empresa de marketing de São Paulo, explorei IA e automação de processos. Com n8n, webhooks e APIs REST, conectei o atendimento no WhatsApp ao Pipedrive para qualificar e registrar leads automaticamente.',
+      'Essa experiência me ensinou a olhar além do código: entender o processo comercial e criar integrações que reduzem o trabalho manual da equipe.',
     ],
     photos: [
-      photo('marketing-1', 600, 1300, 'Captura de um story com a tela de um monitor mostrando uma página de vendas, no escritório da empresa de marketing'),
-      photo('marketing-2', 600, 928, 'Captura de um story com um notebook em uma reunião online com a equipe da empresa'),
+      { ...photo('planads', 720, 372, 'Planads: marketing e automações', 'png'), objectFit: 'contain' },
     ],
   },
   {
-    title: 'Hoje',
-    text: 'Desenvolvo e entrego sistemas de ponta a ponta. Também tenho a Luma Soluções Digitais, minha empresa de soluções digitais.',
+    title: 'Hoje: construindo meu próprio caminho',
+    text: [
+      'Hoje, continuo minha trajetória como desenvolvedor na Nérus e, fora do expediente, me dedico à Lume Soluções Digitais, onde desenvolvo projetos para clientes e aprendo cada vez mais sobre negócios e tecnologia.',
+      'Também sigo estudando inglês e me aprofundando em inteligência artificial, LLMs, RAG, agentes de IA, arquitetura de software e System Design. Estou quase terminando minha graduação por completo também.',
+      'Ainda tenho muito a aprender, lugares para conhecer e sonhos para realizar. Quero continuar evoluindo, participar de projetos desafiadores e construir uma carreira que me permita explorar o mundo e novas oportunidades.',
+    ],
+    photos: [
+      {
+        src: asset('/assets/img/me/hoje-sorrindo.jpg'),
+        w: 720,
+        h: 1280,
+        alt: 'Octávio sorrindo com os braços cruzados',
+        objectPosition: 'center 60%',
+      },
+      photo('hoje-espelho', 960, 1280, 'Octávio tirando uma foto no espelho do elevador', 'jpg'),
+    ],
   },
 ]
 
 export default function Journey() {
+  const mobile = useMediaQuery('(max-width: 900px)')
+  const [expandedPhoto, setExpandedPhoto] = useState(null)
+  const dialogRef = useRef(null)
+
+  useEffect(() => {
+    if (!expandedPhoto) return undefined
+    const dialog = dialogRef.current
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    dialog.showModal()
+    return () => {
+      dialog.close()
+      document.body.style.overflow = previousOverflow
+    }
+  }, [expandedPhoto])
+
   return (
     <section id="trajetoria" data-section="trajetoria" className="journey" aria-labelledby="journey-title">
       <div className="journey__grid container">
@@ -132,11 +174,21 @@ export default function Journey() {
                 <div className="timeline__media">
                   <div
                     className="timeline__photos"
-                    style={{ '--ar': (st.photos.reduce((a, p) => a + p.w / p.h, 0)).toFixed(3) }}
+                    style={{ '--ar': st.photosAspect || (st.photos.reduce((a, p) => a + p.w / p.h, 0)).toFixed(3) }}
                   >
                     {st.photos.map((p) => (
                       <figure key={p.src} style={{ flexGrow: p.w / p.h }}>
-                        <img src={p.src} alt={p.alt} loading="lazy" width={p.w} height={p.h} />
+                        <button type="button" className="timeline__photo-open" disabled={!mobile}
+                          aria-label={`Ampliar foto: ${p.alt}`} onClick={() => setExpandedPhoto(p)}>
+                        <img
+                          src={p.src}
+                          alt={p.alt}
+                          loading="lazy"
+                          width={p.w}
+                          height={p.h}
+                          style={{ '--zoom': p.zoom, '--photo-position': p.objectPosition, objectFit: p.objectFit }}
+                        />
+                        </button>
                       </figure>
                     ))}
                   </div>
@@ -154,10 +206,21 @@ export default function Journey() {
             <li key={o.title} data-reveal style={{ '--g': COLORS[i % COLORS.length], '--d': `${i * 70}ms` }}>
               <h4>{o.title}</h4>
               <p>{o.text}</p>
+              {o.image && (
+                <img className="journey__outside-photo" src={o.image} alt={o.imageAlt} width={o.imageWidth || 960} height={o.imageHeight || 1280} loading="lazy" />
+              )}
             </li>
           ))}
         </ul>
       </div>
+      <dialog ref={dialogRef} className="journey__lightbox" aria-label="Foto ampliada"
+        onClose={() => setExpandedPhoto(null)}
+        onClick={(event) => { if (event.target === event.currentTarget) setExpandedPhoto(null) }}>
+        <button type="button" className="journey__lightbox-close" aria-label="Fechar foto" onClick={() => setExpandedPhoto(null)}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+        </button>
+        {expandedPhoto && <img src={expandedPhoto.src} alt={expandedPhoto.alt} />}
+      </dialog>
     </section>
   )
 }

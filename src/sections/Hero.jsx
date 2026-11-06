@@ -1,10 +1,29 @@
+import { useEffect, useState } from 'react'
+import { useSwipe } from '../hooks/useSwipe'
+import { useMediaQuery } from '../hooks/motion'
 import { links } from '../data/profile'
 import { asset } from '../utils/asset'
-import { IconArrow, IconLinkedIn, IconPin, IconWhatsApp } from '../components/Icons'
+import { IconArrow, IconArrowLeft, IconLinkedIn, IconPin, IconWhatsApp } from '../components/Icons'
 
 const liveClients = ['Garimpo Auto', 'Lead Finder', 'Sites, assistentes com IA e automações que simplificam processos.']
 
 export default function Hero() {
+  const mobile = useMediaQuery('(max-width: 600px)')
+  const [activeClient, setActiveClient] = useState(0)
+
+  useEffect(() => {
+    if (!mobile) return undefined
+    const timer = window.setInterval(() => {
+      setActiveClient((current) => (current + 1) % liveClients.length)
+    }, 1500)
+    return () => window.clearInterval(timer)
+  }, [mobile, activeClient])
+
+  const changeClient = (direction) => {
+    setActiveClient((current) => (current + direction + liveClients.length) % liveClients.length)
+  }
+  const swipe = useSwipe((direction) => { if (mobile) changeClient(direction) })
+
   return (
     <section id="inicio" data-section="inicio" className="hero" aria-labelledby="hero-title">
       <div className="hero__grid container">
@@ -32,11 +51,20 @@ export default function Hero() {
 
           <div className="hero__proof">
             <p className="hero__proof-label">Em produção:</p>
-            <ul>
-              {liveClients.map((c) => (
-                <li key={c}>{c}</li>
-              ))}
-            </ul>
+            <div className="hero__proof-carousel" {...swipe}>
+              <button type="button" className="hero__proof-arrow" aria-label="Item anterior" onClick={() => changeClient(-1)}>
+                <IconArrowLeft />
+              </button>
+              <ul aria-label="Trabalhos em produção">
+                {liveClients.map((c, i) => (
+                  <li key={c} hidden={mobile && i !== activeClient}>{c}</li>
+                ))}
+              </ul>
+              <button type="button" className="hero__proof-arrow" aria-label="Próximo item" onClick={() => changeClient(1)}>
+                <IconArrow />
+              </button>
+            </div>
+            <p className="carousel-hint">Arraste para o lado para ver mais</p>
           </div>
         </div>
 
@@ -66,7 +94,7 @@ export default function Hero() {
         e.preventDefault()
         document.getElementById('case')?.scrollIntoView({ behavior: 'smooth' })
       }}>
-        Vem conhecer meu trabalho! <IconArrow size={16} />
+        Venha conhecer meu trabalho! <IconArrow size={16} />
       </a>
     </section>
   )

@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import Home from './pages/Home'
 import ProjectDetail from './pages/ProjectDetail'
 import Hud from './components/Hud'
+import FloatingActions from './components/FloatingActions'
 import { projectsData } from './data/projects'
 
 function ScrollManager() {
@@ -42,6 +43,7 @@ export default function App() {
         ))}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <FloatingActions />
     </>
   )
 }

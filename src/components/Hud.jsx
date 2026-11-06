@@ -103,7 +103,7 @@ export default function Header() {
     <header className={cls}>
       <div className="site-header__inner container">
         <SectionLink id="inicio" className="brand" aria-label="Octávio Augusto, início">
-          <img src={asset('/assets/img/me/avatar.webp')} alt="" className="brand__avatar" width="44" height="44" />
+          <img src={asset('/assets/img/header-avatar.svg')} alt="" className="brand__avatar" width="44" height="44" />
           <span className="brand__name">Octávio Augusto</span>
         </SectionLink>
 

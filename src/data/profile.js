@@ -36,10 +36,10 @@ export const principles = [
 
 /* Fora do código: vida pessoal, para a seção de trajetória */
 export const outside = [
-  { title: 'Corrida', text: 'Já corri 15 km e pretendo fazer uma meia maratona em 2027.' },
-  { title: 'Sonhos', text: 'Ter a casa própria e viajar para a Europa.' },
-  { title: 'Curiosidade', text: 'Gosto de psicologia e de filosofia humana.' },
-  { title: 'Gente', text: 'Sempre que possível, estou com amigos e família.' },
+  { image: asset('/assets/img/me/eumminhamaecorrendo.jpeg'), imageAlt: 'Octávio com sua mãe em uma corrida', title: 'Corrida', text: 'Já corri 15 km e pretendo fazer uma meia maratona em 2027.' },
+  { image: asset('/assets/img/me/euSonhos.jpeg'), imageAlt: 'Sonhos de Octávio', imageWidth: 1290, imageHeight: 1403, title: 'Sonhos', text: 'Ter a casa própria e viajar para a Europa.' },
+  { image: asset('/assets/img/me/euCuriosidade.jpeg'), imageAlt: 'Registro pessoal de Octávio', imageWidth: 1208, imageHeight: 1600, title: 'Curiosidade', text: 'Fã de Clóvis de Barros, DJ de quarto e movido a Monster branco sem açúcar.' },
+  { image: asset('/assets/img/me/euFamilioa.jpeg'), imageAlt: 'Octávio com sua família', imageWidth: 1200, imageHeight: 1600, title: 'Gente', text: 'Entre amigos e família, recarrego as energias e coleciono boas histórias.' },
 ]
 
 /* Stack agrupada. `match` lista os nomes usados em projects.tools — a contagem é derivada dos dados reais. */

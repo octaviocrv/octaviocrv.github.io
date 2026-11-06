@@ -1,7 +1,17 @@
+import { useRef, useState } from 'react'
 import { education, portraits, principles } from '../data/profile'
+import { IconArrow, IconArrowLeft } from '../components/Icons'
 
 export default function About() {
   const [main] = portraits
+  const principlesRef = useRef(null)
+  const [principleIndex, setPrincipleIndex] = useState(0)
+  const goToPrinciple = (next) => {
+    const list = principlesRef.current
+    const card = list?.children[next]
+    if (card) list.scrollTo({ left: card.offsetLeft - list.children[0].offsetLeft, behavior: 'smooth' })
+  }
+  const changePrinciple = (direction) => goToPrinciple((principleIndex + direction + principles.length) % principles.length)
 
   return (
     <section id="sobre" data-section="sobre" className="about" aria-labelledby="about-title">
@@ -30,7 +40,26 @@ export default function About() {
             </p>
           </div>
 
-          <ul className="principles">
+          <div className="principles-carousel">
+          <p className="carousel-hint">Arraste para o lado para ver mais</p>
+          <div className="principles-controls">
+            <button type="button" aria-label="Princípio anterior" onClick={() => changePrinciple(-1)}><IconArrowLeft /></button>
+            <div className="principles-dots" aria-label="Escolher princípio">
+              {principles.map((item, i) => (
+                <button type="button" key={item.title} className={`principles-dot${principleIndex === i ? ' is-active' : ''}`}
+                  aria-label={item.title} aria-current={principleIndex === i ? 'step' : undefined}
+                  onClick={() => goToPrinciple(i)} />
+              ))}
+            </div>
+            <button type="button" aria-label="Próximo princípio" onClick={() => changePrinciple(1)}><IconArrow /></button>
+          </div>
+          <ul className="principles" ref={principlesRef} onScroll={(e) => {
+            const list = e.currentTarget
+            const first = list.children[0]
+            const second = list.children[1]
+            const stride = second.offsetLeft - first.offsetLeft
+            if (stride > 0) setPrincipleIndex(Math.round(list.scrollLeft / stride))
+          }}>
             {principles.map((p, i) => (
               <li key={p.title} data-reveal style={{ '--d': `${i * 80}ms` }}>
                 <h3>{p.title}</h3>
@@ -38,6 +67,7 @@ export default function About() {
               </li>
             ))}
           </ul>
+          </div>
 
           <dl className="sheet" data-reveal>
             <div>
